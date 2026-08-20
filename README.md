@@ -15,29 +15,42 @@ and a distributor run once, locally; the executor is what actually runs
 remotely, once per chunk, on whatever worker picks it up:
 
 ```text
-                   local (x1)                            remote (xN)
-+---------------+---------------+---------------+     +---------------+
-| physics code  |  vine_reduce  |  distributor  | --> |   executor    |
-+---------------+---------------+---------------+     +---------------+
+       local (x1)
++---------------------+
+|     physics code    |
++---------------------+
+|     vine_reduce     |
++---------------------+
+|     distributor     |
++---------------------+
+           |
+           v
+      remote (xN)
++---------------------+
+|       executor      |
++---------------------+
 ```
 
 This repo's examples all use TaskVine as the distributor; the executor
 slot is what varies:
 
 ```text
-                   local (x1)                                 remote (xN)
-+---------------+---------------+---------------+     +-------------------------+
-|               |               |               |     |       Coffea            |
-| physics code  |  vine_reduce  |   TaskVine    | --> |     + virtual arrays or |
-|               |               |               |     |     + dask              |
-+---------------+---------------+---------------+     +-------------------------+
-```
-
-```text
-                   local (x1)                             remote (xN)
-+---------------+---------------+---------------+     +-----------------+
-| physics code  |  vine_reduce  |   TaskVine    | --> | ROOT RDataFrame |
-+---------------+---------------+---------------+     +-----------------+
+       local (x1)                  local (x1)
++---------------------+     +---------------------+
+|     physics code    |     |     physics code    |
++---------------------+     +---------------------+
+|     vine_reduce     |     |     vine_reduce     |
++---------------------+     +---------------------+
+|       TaskVine      |     |       TaskVine      |
++---------------------+     +---------------------+
+           |                           |
+           v                           v
+      remote (xN)                 remote (xN)
++---------------------+     +---------------------+
+|        Coffea       |     |   ROOT RDataFrame   |
+| + virtual arrays or |     +---------------------+
+|        + dask       |
++---------------------+
 ```
 
 At Notre Dame the executors run as individual tasks, one per chunk, inside
