@@ -5,7 +5,7 @@ workflows with [Coffea](https://github.com/scikit-hep/coffea) on top of
 [TaskVine](https://cctools.readthedocs.io/en/stable/taskvine), orchestrated
 by [`vine_reduce`](https://github.com/cooperative-computing-lab/vine_reduce).
 Nothing here depends on Notre Dame resources, so it should work anywhere
-you have a Python environment and either local cores or a batch cluster
+there's a Python environment and either local cores or a batch cluster
 (HTCondor, SLURM, SGE, ...) to point workers at.
 
 ## Shape of the stack
@@ -120,9 +120,57 @@ beyond. `vine_reduce` is narrower by design — it only covers the analysis
 plugged in as one stage of a `coffea-workflow` pipeline rather than
 replacing it.
 
+## Advantages
+
+A few consequences follow from the design above:
+
+- **No end-of-run accumulation.** Datasets are orthogonal, so nothing
+  waits on every dataset to finish before it can produce a result: each
+  (processor, dataset) pair reaches its own final result independently,
+  as soon as its own chunks are done, rather than all datasets piling up
+  into one accumulation step at the end. Further, several final results
+  per (processor, dataset) can be defined according to number of events
+  processed.
+- **Earlier datasets finish first.** Datasets run concurrently, but when
+  submission capacity is limited, they're fed chunks in the order they're
+  listed, so datasets declared earlier claim that capacity first and tend
+  to reach their own final result sooner. If a run is interrupted, the
+  datasets it got to first are more likely to have already checkpointed a
+  complete result.
+- **Dynamic accumulation.** Because reducers are commutative, associative,
+  and distributive, partial results can be folded together in whatever
+  order and grouping happens to be ready, instead of following a fixed
+  reduction tree laid out ahead of time.
+- **Checkpointing.** Intermediate reductions are checkpointed as they're
+  produced, not only once a (processor, dataset) pair is entirely done.
+- **Restart from disk.** Checkpoints, and a record of what's already been
+  processed, live on disk, so an interrupted run resumes from where it
+  left off instead of recomputing chunks it already finished.
+- **Results never open at the manager.** `vine_reduce`'s own process
+  handles results only as opaque tokens or byte streams — it never
+  deserializes one, even when writing a final result to disk. The
+  memory-heavy work (materializing chunks, reducing them) happens
+  entirely at the worker that produced the result, not at the machine
+  running `vine_reduce`.
+- **No global task graph.** Chunk and reduce tasks are submitted
+  opportunistically as work becomes available, rather than built as one
+  graph spanning the whole dataset up front. When an executor itself uses
+  something like Dask, the graph it builds stays scoped to that one
+  chunk — a "minigraph" — instead of growing to cover the entire dataset.
+- **Dynamic chunking.** Chunk size adapts to what the distributor reports
+  back — it's reduced when a chunk fails from resource exhaustion, rather
+  than staying fixed for the whole run.
+- **Modular stages.** Because the distributor and the executor are
+  separate, no stage of the pipeline has to commit the whole workflow to
+  one library's execution model. A single `TaskVineDistributor` run can
+  pair a Coffea-with-Dask executor for one processor with a plain ROOT
+  RDataFrame call for another, rather than everything having to be "all
+  Coffea" or "all Dask" or "all TaskVine."
+
 ## Installation
 
-The only thing you need to install is `vine_reduce` itself; everything
+The only things needed to install are `vine_reduce` itself and the physics
+code; everything
 else (Coffea, TaskVine/`ndcctools`, awkward, uproot, ...) comes along as
 its dependencies. Python 3.13+ is required either way. `ndcctools` (which
 provides TaskVine) is a conda-forge-only package, so both options below
@@ -145,8 +193,8 @@ pip install .        # or `pip install -e .` for an editable/development install
 
 [pixi](https://pixi.sh) reproduces the same conda-forge environment from
 `vine_reduce`'s own `pyproject.toml`/`pixi.lock`, so it's an alternative
-to Option A when you'd rather have the exact dependency versions pinned
-and managed for you.
+to Option A for when the exact dependency versions should be pinned and
+managed automatically.
 
 ```bash
 # Install pixi, if you don't already have it
@@ -159,7 +207,7 @@ pixi install          # runtime environment
 pixi install -e dev   # optional: adds pytest, black, flake8, pyright
 ```
 
-Run everything through `pixi run` (e.g. `pixi run python your_script.py`)
+Run everything through `pixi run` (e.g. `pixi run python analysis_script.py`)
 so it picks up the managed environment, or drop into `pixi shell` for the
 rest of the session.
 
@@ -176,11 +224,11 @@ system needs nothing beyond TaskVine itself.
 
 The packed environment must be a real, self-contained install — not an
 editable one. An editable `pip install -e .` only writes a path pointer
-back to your local checkout; conda-packing it produces a tarball that
+back to the local checkout; conda-packing it produces a tarball that
 still tries to import `vine_reduce` from a path that only exists on the
 machine that built it, which breaks the moment it's unpacked anywhere
 else. So building the tarball needs its own, non-editable install,
-separate from the editable one you use for day-to-day development.
+separate from the editable one used for day-to-day development.
 
 ### With conda
 
@@ -343,15 +391,19 @@ it's settled. At minimum this should cover:
   (shared filesystem, restart behavior).
 -->
 
+`vine_reduce` has no CLI of its own — it's called as a library, so any
+flags below (dataset path, site, ...) are whatever the analysis script
+itself defines, same as `vr_cortado.py` above.
+
 ```bash
-# cd path/to/your/analysis
+# cd path/to/analysis
 
 # conda
 # conda activate cms-stack
-# python your_vr_analysis.py --dataset your_dataset.json --site nd_htcondor
+# python vr_analysis.py
 
 # pixi
-# pixi run python your_vr_analysis.py --dataset your_dataset.json --site nd_htcondor
+# pixi run python vr_analysis.py
 ```
 
 ## Production use: ttbarEFT
