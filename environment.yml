@@ -1,0 +1,16 @@
+name: cms-stack
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - ndcctools
+  - coffea
+  - awkward
+  - uproot
+  - fsspec
+  - fsspec-xrootd
+  - xrootd
+  - numpy
+  - rich
+  - cloudpickle
+  - zstandard

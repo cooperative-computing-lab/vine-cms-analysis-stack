@@ -179,15 +179,15 @@ go through a conda-forge channel rather than plain PyPI.
 ### Option A: conda
 
 ```bash
-conda create -n cms-stack -c conda-forge \
-    python=3.13 ndcctools coffea awkward uproot fsspec fsspec-xrootd \
-    xrootd numpy rich cloudpickle zstandard
+conda env create -f environment.yml
 conda activate cms-stack
 
 git clone https://github.com/cooperative-computing-lab/vine_reduce.git
 cd vine_reduce
 pip install .        # or `pip install -e .` for an editable/development install
 ```
+
+See [`environment.yml`](environment.yml) for the exact package list.
 
 ### Option B: pixi
 
