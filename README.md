@@ -368,42 +368,20 @@ chunked out of binary files — see
 instead; it's the fastest way to see `chunk_to_args`, `processors`, and
 `reducer` wired together without any physics-specific types in the way.
 
-### Running at scale
+### Running cortado at scale
 
-<!--
-TODO(btovar): fill in with the actual production configuration once
-it's settled. At minimum this should cover:
+TODO(btovar): fill in with the actual large-scale cortado run.
 
-- Building `datasets` from real CMS NanoAOD instead of
-  `write_test_data.py` — e.g. via `coffea.dataset_tools.preprocess()`
-  against DAS-resolved file lists, or a fileset JSON like the one
-  `vine_reduce`'s `examples/ttBar/run_processor_with_vr.py` reads.
-- xrootd/X509 proxy setup for reading files over the WAN (see the
-  x509_proxy handling in run_processor_with_vr.py for a past approach).
-- Swapping the local `vine.Factory` above for a batch-submitted one
-  (HTCondor/SLURM/SGE `vine_factory`, or condor_submit_workers) pointed
-  at a real pool, and sizing resources_processor / resources_reducer /
-  chunksize for that pool.
-- Building a "Packaging the environment for TaskVine workers" tarball
-  (see above) and passing it as `TaskVineDistributor(environment=...)`,
-  so the batch pool's workers don't need Coffea/vine_reduce preinstalled.
-- Where results_dir / checkpoint_dir should live for a multi-hour run
-  (shared filesystem, restart behavior).
--->
-
-`vine_reduce` has no CLI of its own — it's called as a library, so any
-flags below (dataset path, site, ...) are whatever the analysis script
-itself defines, same as `vr_cortado.py` above.
-
+stubs...
 ```bash
-# cd path/to/analysis
+cd vine_reduce/examples/cortado
 
 # conda
-# conda activate cms-stack
-# python vr_analysis.py
+conda activate cms-stack
+python vr_cortado.py
 
 # pixi
-# pixi run python vr_analysis.py
+pixi run python vr_cortado.py
 ```
 
 ## Production use: ttbarEFT
