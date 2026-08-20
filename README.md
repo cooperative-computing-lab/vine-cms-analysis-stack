@@ -182,25 +182,30 @@ A few consequences follow from the design above:
 
 ## Installation
 
-The only things needed to install are `vine_reduce` itself and the physics
-code; everything
+The only thing this repo depends on is `vine_reduce` itself; everything
 else (Coffea, TaskVine/`ndcctools`, awkward, uproot, ...) comes along as
-its dependencies. Python 3.13+ is required either way. `ndcctools` (which
+its dependencies, and `vine_reduce`'s own clone is where the environment
+gets set up. Python 3.13+ is required either way. `ndcctools` (which
 provides TaskVine) is a conda-forge-only package, so both options below
 go through a conda-forge channel rather than plain PyPI.
+
+```bash
+git clone https://github.com/cooperative-computing-lab/vine_reduce.git
+cd vine_reduce
+```
 
 ### Option A: conda
 
 ```bash
 conda env create -f environment.yml
-conda activate cms-stack
+conda activate vine-cms-example-stack
 
-git clone https://github.com/cooperative-computing-lab/vine_reduce.git
-cd vine_reduce
 pip install .        # or `pip install -e .` for an editable/development install
 ```
 
-See [`environment.yml`](environment.yml) for the exact package list.
+See `vine_reduce`'s own
+[`environment.yml`](https://github.com/cooperative-computing-lab/vine_reduce/blob/main/environment.yml)
+for the exact package list.
 
 ### Option B: pixi
 
@@ -213,9 +218,6 @@ managed automatically.
 # Install pixi, if you don't already have it
 curl -fsSL https://pixi.sh/install.sh | bash
 
-# Clone and install
-git clone https://github.com/cooperative-computing-lab/vine_reduce.git
-cd vine_reduce
 pixi install          # runtime environment
 pixi install -e dev   # optional: adds pytest, black, flake8, pyright
 ```
@@ -245,17 +247,19 @@ separate from the editable one used for day-to-day development.
 
 ### With conda
 
-Build a fresh, non-editable environment and pack it — this is the same
-recipe `poncho_package_run --help-env-creation` documents:
+Build a fresh, non-editable environment from `vine_reduce`'s own
+`environment.yml` and pack it — this is the same recipe
+`poncho_package_run --help-env-creation` documents, with `conda-pack`
+added to the environment so it's available to run the pack step:
 
 ```bash
-conda create -p ./cms-stack-pack -c conda-forge \
-    python=3.13 ndcctools coffea awkward uproot fsspec fsspec-xrootd \
-    xrootd numpy rich cloudpickle zstandard conda-pack
-conda activate ./cms-stack-pack
-
 git clone https://github.com/cooperative-computing-lab/vine_reduce.git
 cd vine_reduce
+
+conda env create -p ./cms-stack-pack -f environment.yml
+conda activate ./cms-stack-pack
+conda install -c conda-forge conda-pack
+
 pip install .   # not -e .
 
 conda-pack -p "$CONDA_PREFIX" -o cms-stack.tar.gz
@@ -327,7 +331,7 @@ needed, and no separate `vine_worker` process to start by hand:
 cd vine_reduce/examples/cortado
 
 # conda
-conda activate cms-stack
+conda activate vine-cms-example-stack
 python vr_cortado.py
 
 # pixi
@@ -390,7 +394,7 @@ stubs...
 cd vine_reduce/examples/cortado
 
 # conda
-conda activate cms-stack
+conda activate vine-cms-example-stack
 python vr_cortado.py
 
 # pixi
@@ -425,4 +429,4 @@ examples.
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
+This project is licensed under the GPL 2.0 - see the LICENSE file for details.
