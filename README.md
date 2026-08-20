@@ -377,7 +377,7 @@ it's settled. At minimum this should cover:
 - Building `datasets` from real CMS NanoAOD instead of
   `write_test_data.py` — e.g. via `coffea.dataset_tools.preprocess()`
   against DAS-resolved file lists, or a fileset JSON like the one
-  `examples/ttBar/run_processor_with_vr.py` reads.
+  `vine_reduce`'s `examples/ttBar/run_processor_with_vr.py` reads.
 - xrootd/X509 proxy setup for reading files over the WAN (see the
   x509_proxy handling in run_processor_with_vr.py for a past approach).
 - Swapping the local `vine.Factory` above for a batch-submitted one
@@ -411,15 +411,17 @@ itself defines, same as `vr_cortado.py` above.
 [`TopEFT/ttbarEFT`](https://github.com/TopEFT/ttbarEFT) is a CMS
 top-quark EFT search that runs its analysis stage through `vine_reduce`
 on top of TaskVine, distributing histogram-filling processors over an
-HTCondor pool. [`examples/ttBar/run_processor_with_vr.py`](examples/ttBar/run_processor_with_vr.py)
-in this repo shows how that integration looked in practice: driving a
-`ttbarEFT` `AnalysisProcessor` per lepton channel through `vine_reduce`.
-It predates the current `VineReduceCoffea`/`TaskVineDistributor` API
-described above (it was written against an earlier `vine_reduce`
-release), so treat it as a reference for how a full physics analysis
-wires up channels, Wilson-coefficient/histogram selection, and X509 proxy
-handling around `vine_reduce`, not as a runnable script against the
-current API.
+HTCondor pool.
+[`vine_reduce`'s `examples/ttBar/run_processor_with_vr.py`](https://github.com/cooperative-computing-lab/vine_reduce/blob/main/examples/ttBar/run_processor_with_vr.py)
+shows how that integration looked in practice: driving a `ttbarEFT`
+`AnalysisProcessor` per lepton channel through `vine_reduce`. It predates
+the current `VineReduceCoffea`/`TaskVineDistributor` API described above
+(it was written against an earlier `vine_reduce` release), so treat it as
+a reference for how a full physics analysis wires up channels,
+Wilson-coefficient/histogram selection, and X509 proxy handling around
+`vine_reduce`, not as a runnable script against the current API. See
+[`examples/README.md`](examples/README.md) for a full index of runnable
+examples.
 
 ## Further reading
 
