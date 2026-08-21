@@ -1,6 +1,6 @@
 # Vine CMS Analysis Stack
 
-A reference stack for running CMS (Compact Muon Solenoid) analysis
+A reference stack for running CMS analysis
 workflows with [Coffea](https://github.com/scikit-hep/coffea) on top of
 [TaskVine](https://cctools.readthedocs.io/en/stable/taskvine), orchestrated
 by [`vine_reduce`](https://github.com/cooperative-computing-lab/vine_reduce).

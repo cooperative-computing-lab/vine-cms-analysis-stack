@@ -27,20 +27,19 @@ setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
 - [`cortado/vr_cortado.py`](cortado/vr_cortado.py) — a HEP skim over
   synthetic NanoAOD-like ROOT files using `VineReduceCoffea`, no real CMS
   data or `xrootd` access needed. See the ["Quickstart: cortado on
-  synthetic data"](../README.md#quickstart-cortado-on-synthetic-data)
-  section of this repo's README for the call shape and how it maps onto
-  this stack.
+  synthetic data"](../DOC.md#quickstart-cortado-on-synthetic-data)
+  section of DOC.md for the call shape and how it maps onto this stack.
 - [`ttBar/run_processor_with_vr.py`](ttBar/run_processor_with_vr.py) — the
   `ttbarEFT` production integration. Predates the current
   `VineReduceCoffea`/`TaskVineDistributor` API, so it's a reference for
   how a full physics analysis wires up channels, histogram selection, and
   X509 proxy handling — not a runnable script against the current API.
-  See this repo's ["Production use:
-  ttbarEFT"](../README.md#production-use-ttbareft) section for context.
+  See DOC.md's ["Production use:
+  ttbarEFT"](../DOC.md#production-use-ttbareft) section for context.
 
 Run `trijet`, `ADL`, `cortado`, or `ttBar` with `pixi run python <script>.py` from inside
-this repo, or `python <script>.py` inside an activated `cms-stack` conda
-environment (see [Installation](../README.md#installation)). Run
+this repo, or `python <script>.py` inside an activated `vine-cms-analysis-stack` conda
+environment (see [Installation](../DOC.md#installation)). Run
 `quick_start` the same way, but from inside a `vine_reduce` checkout
 instead, since that's where it lives.
 
