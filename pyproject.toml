@@ -1,0 +1,111 @@
+[build-system]
+requires = ["setuptools>=45,<81", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vine-cms-analysis-stack"
+version = "0.1.0"
+description = "Reference stack for running CMS analyses with Coffea and vine_reduce on TaskVine"
+readme = "DOC.md"
+license = "GPL-2.0-or-later"
+authors = [
+    {name = "Ben Tovar", email = "btovar@nd.edu"},
+]
+keywords = ["cms", "coffea", "taskvine", "vine_reduce", "high-energy-physics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.13"
+dependencies = [
+    "awkward>=2.8.7",
+    "coffea>=2025.7.3",
+    "fsspec>=2026.7.0",
+    "fsspec-xrootd>=0.5.1",
+    "numpy>=2.4.6",
+    "rich>=14.2.0",
+    "uproot>=5.6.6",
+    "xrootd>=5.8.4",
+    # Not yet on PyPI - install it first from its own clone (see this repo's
+    # DOC.md, "Installation") so this requirement is already satisfied by
+    # the time `pip install .` runs here. Switch to a plain PyPI install
+    # once vine_reduce is published there.
+    "vine_reduce>=2025.12.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+]
+conda = [
+    "ndcctools>=7.17.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/cooperative-computing-lab/vine-cms-analysis-stack"
+Repository = "https://github.com/cooperative-computing-lab/vine-cms-analysis-stack.git"
+Documentation = "https://github.com/cooperative-computing-lab/vine-cms-analysis-stack#readme"
+"Bug Tracker" = "https://github.com/cooperative-computing-lab/vine-cms-analysis-stack/issues"
+
+[tool.setuptools]
+packages = []
+
+[tool.black]
+line-length = 100
+target-version = ['py313']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v"
+filterwarnings = [
+    # ProcessPoolExecutor (vine_reduce's executor.py, local_distributor.py) starts its
+    # own management thread before forking worker processes, which trips Python
+    # 3.12+'s "fork() in a multi-threaded process" check. That thread is the pool's
+    # own bookkeeping, not user state the fork could corrupt, so this is benign here.
+    "ignore:This process .* is multi-threaded, use of fork\\(\\) may lead to deadlocks in the child:DeprecationWarning",
+]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64"]
+
+[tool.pixi.dependencies]
+awkward = "==2.8.7"
+coffea = "==2025.7.3"
+fsspec = ">=2026.7.0"
+fsspec-xrootd = ">=0.5.1"
+ndcctools = ">=7.17.1"
+numpy = ">=2.4.6"
+python = ">=3.13"
+rich = ">=14.2.0"
+setuptools = "<81"
+uproot = ">=5.6.6"
+xrootd = ">=5.8.4"
+
+[tool.pixi.pypi-dependencies]
+vine-cms-analysis-stack = { path = ".", editable = true }
+# Temporary, until vine_reduce is published on PyPI: pixi clones and installs
+# it straight from its own repository instead of resolving it from an index.
+vine_reduce = { git = "https://github.com/cooperative-computing-lab/vine_reduce.git" }
+
+[tool.pixi.feature.dev.dependencies]
+pytest = ">=6.0"
+pytest-cov = ">=2.0"
+black = ">=21.0"
+flake8 = ">=3.8"
+pyright = "*"
+
+[tool.pixi.feature.pack.pypi-dependencies]
+vine-cms-analysis-stack = { path = ".", editable = false }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+pack = { features = ["pack"], solve-group = "default" }
