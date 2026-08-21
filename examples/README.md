@@ -38,3 +38,11 @@ this repo, or `python <script>.py` inside an activated `cms-stack` conda
 environment (see [Installation](../README.md#installation)). Run
 `quick_start` the same way, but from inside a `vine_reduce` checkout
 instead, since that's where it lives.
+
+`trijet`, `ADL`, and `cortado` all generate their synthetic NanoAOD-like
+ROOT files the same way, via the shared
+[`write_test_data.py`](write_test_data.py) script - each example calls it
+as a subprocess the first time it runs (see `ensure_datasets()` in its
+`vr_*.py`), and reuses the same files (and the `datasets.json` manifest it
+writes alongside them) on later runs. Delete an example's `data/`
+directory to force fresh synthetic data.

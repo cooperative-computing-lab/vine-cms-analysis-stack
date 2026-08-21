@@ -26,11 +26,13 @@ mechanics with plain Python types instead of awkward arrays).
 
 Concretely, in this example:
 
-- write_test_data.py generates two datasets ("signal" and "background") of
-  three NanoAOD-shaped ROOT files each, under examples/coffea_skim/data/,
-  freshly on every run. "signal" files average more leptons per event than
-  "background" ones (see DATASET_LEPTON_MEANS), so the skim below should
-  keep a noticeably larger fraction of "signal" events.
+- ../write_test_data.py (shared with the other examples) generates two
+  datasets ("signal" and "background") of three NanoAOD-shaped ROOT files
+  each, under examples/cortado/data/, the first time this runs (see
+  ensure_datasets() below - later runs reuse the same files). "signal"
+  files average more leptons per event than "background" ones (see
+  DATASET_LEPTON_MEANS), so the skim below should keep a noticeably larger
+  fraction of "signal" events.
 - skimmer (the map step) keeps only events with >=4 reconstructed leptons
   (electrons + muons combined) - a placeholder for a real analysis'
   selection.
@@ -45,14 +47,15 @@ Concretely, in this example:
 from __future__ import annotations
 
 import glob
+import json
 import os
 import shutil
+import subprocess
+import sys
 
 import awkward as ak
 import ndcctools.taskvine as vine
-import numpy as np
 
-import write_test_data
 from vine_reduce import serialization
 from vine_reduce.coffea import VineReduceCoffea
 from vine_reduce.taskvine_distributor import TaskVineDistributor
@@ -60,6 +63,26 @@ from vine_reduce.taskvine_distributor import TaskVineDistributor
 CHUNKSIZE = 150
 FILES_PER_DATASET = 3
 DATASET_LEPTON_MEANS = {"signal": 3.0, "background": 1.0}
+
+
+def ensure_datasets(data_dir, *script_args):
+    """Generates data_dir's ROOT files + datasets.json manifest by running
+    ../write_test_data.py as a subprocess - but only the first time; once
+    datasets.json exists, later runs reuse the same synthetic data instead
+    of paying the generation cost again. Returns the loaded manifest,
+    already shaped as the `input` dict VineReduceCoffea expects (see that
+    script's module docstring)."""
+    write_test_data = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "write_test_data.py"
+    )
+    manifest_path = os.path.join(data_dir, "datasets.json")
+    if not os.path.exists(manifest_path):
+        subprocess.run(
+            [sys.executable, write_test_data, "--data-dir", data_dir, *script_args],
+            check=True,
+        )
+    with open(manifest_path) as f:
+        return json.load(f)
 
 
 def skimmer(events):
@@ -94,21 +117,19 @@ def build_datasets(data_dir):
     {"object_path": ..., "num_entries": ...} - what
     coffea.dataset_tools.preprocess() itself produces, and what
     coffea_input_to_datasets (VineReduceCoffea's default input_to_datasets)
-    knows how to read."""
-    rng = np.random.default_rng()
-    datasets = {}
-    for dataset_name, lepton_mean in DATASET_LEPTON_MEANS.items():
-        files = write_test_data.generate_dataset_files(
-            data_dir, dataset_name, FILES_PER_DATASET, lepton_mean, rng
-        )
-        datasets[dataset_name] = {
-            "metadata": {},
-            "files": {
-                path: {"object_path": "Events", "num_entries": num_events}
-                for path, num_events in files.items()
-            },
-        }
-    return datasets
+    knows how to read. Generated (or reused) via ../write_test_data.py -
+    DATASET_LEPTON_MEANS' values are passed as both --muon-mean and
+    --electron-mean, one per dataset, in the same order as its keys."""
+    dataset_names = list(DATASET_LEPTON_MEANS.keys())
+    lepton_means = [str(mean) for mean in DATASET_LEPTON_MEANS.values()]
+    return ensure_datasets(
+        data_dir,
+        "--dataset-names", *dataset_names,
+        "--num-datasets", str(len(dataset_names)),
+        "--num-files", str(FILES_PER_DATASET),
+        "--muon-mean", *lepton_means,
+        "--electron-mean", *lepton_means,
+    )
 
 
 def main():

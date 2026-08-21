@@ -16,26 +16,27 @@ docstring) merges each into either a single Hist (q1-q5, q7, q8) or a
 dict of two Hists (q6) across chunks, with no custom reducer needed for
 any of them.
 
-The synthetic data (see write_test_data.py) is uncorrelated random
+The synthetic data (see ../write_test_data.py) is uncorrelated random
 kinematics, not a physical event generator, so entry counts below are
 sanity checks that each query's selection actually fires on a sizeable
 fraction of events - not physics results. The probabilities were checked
 against this data's ranges/means before picking EXPECTED_MIN_FRACTION
 per query (e.g. Q5's dimuon mass window alone passes ~1/3 of random muon
-pairs from this data's kinematics - see write_test_data.py).
+pairs from this data's kinematics - see ../write_test_data.py).
 """
 
 from __future__ import annotations
 
 import glob
+import json
 import os
 import shutil
+import subprocess
+import sys
 
 import ndcctools.taskvine as vine
-import numpy as np
 
 import processors
-import write_test_data
 from vine_reduce import serialization
 from vine_reduce.coffea import VineReduceCoffea
 from vine_reduce.taskvine_distributor import TaskVineDistributor
@@ -43,6 +44,27 @@ from vine_reduce.taskvine_distributor import TaskVineDistributor
 FILES_PER_DATASET = 3
 CHUNKSIZE = 150
 DATASET_NAME = "adl_demo"
+
+
+def ensure_datasets(data_dir, *script_args):
+    """Generates data_dir's ROOT files + datasets.json manifest by running
+    ../write_test_data.py as a subprocess - but only the first time; once
+    datasets.json exists, later runs reuse the same synthetic data instead
+    of paying the generation cost again. Returns the loaded manifest,
+    already shaped as the `input` dict VineReduceCoffea expects (see that
+    script's module docstring)."""
+    write_test_data = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "write_test_data.py"
+    )
+    manifest_path = os.path.join(data_dir, "datasets.json")
+    if not os.path.exists(manifest_path):
+        subprocess.run(
+            [sys.executable, write_test_data, "--data-dir", data_dir, *script_args],
+            check=True,
+        )
+    with open(manifest_path) as f:
+        return json.load(f)
+
 
 PROCESSORS = {
     "q1": processors.q1,
@@ -58,7 +80,7 @@ PROCESSORS = {
 }
 
 # Least-selective fraction of total events each query is expected to fill
-# at least one histogram entry for, given write_test_data.py's kinematics -
+# at least one histogram entry for, given ../write_test_data.py's kinematics -
 # checked empirically (see that file's module docstring), then rounded well
 # below the observed rate so this isn't a flaky check. q1/q2/q2_kin2d/
 # q2_kin3d/q2/q3 fill (at least) once per event unconditionally, so they're
@@ -95,20 +117,19 @@ def load_result(results_dir, dataset_name, processor_name):
 
 
 def build_datasets(data_dir):
-    """Builds the `input` dict VineReduceCoffea expects - see
-    ../cortado/vr_cortado.py's build_datasets for the full shape
-    explanation."""
-    rng = np.random.default_rng()
-    files = write_test_data.generate_dataset_files(data_dir, DATASET_NAME, FILES_PER_DATASET, rng)
-    return {
-        DATASET_NAME: {
-            "metadata": {},
-            "files": {
-                path: {"object_path": "Events", "num_entries": num_events}
-                for path, num_events in files.items()
-            },
-        }
-    }
+    """Builds the `input` dict VineReduceCoffea expects, by generating (or
+    reusing) synthetic data via ../write_test_data.py - see that script's
+    module docstring for the manifest shape and the meaning of the means
+    below (Jet 6/event, Muon 3/event, Electron 2/event - see this module's
+    own docstring for why)."""
+    return ensure_datasets(
+        data_dir,
+        "--dataset-names", DATASET_NAME,
+        "--num-files", str(FILES_PER_DATASET),
+        "--jet-mean", "6.0",
+        "--muon-mean", "3.0",
+        "--electron-mean", "2.0",
+    )
 
 
 def main():

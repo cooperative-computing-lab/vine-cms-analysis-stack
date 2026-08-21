@@ -34,12 +34,19 @@ def _run_example(
     directory and runs script_name there, exactly as a user would from
     within examples/<example_dir_name>. Isolating into tmp_path keeps
     generated data/results/checkpoints out of the source tree.
+
+    Also copies examples/write_test_data.py to tmp_path itself (a sibling
+    of run_dir, not inside it) - each example's vr_*.py locates it via
+    "../write_test_data.py" relative to its own directory, so it needs to
+    land one level up from run_dir, exactly mirroring the real examples/
+    layout.
     """
     src_dir = EXAMPLES_DIR / example_dir_name
     run_dir = tmp_path / example_dir_name
     run_dir.mkdir()
     for py_file in src_dir.glob("*.py"):
         shutil.copy(py_file, run_dir / py_file.name)
+    shutil.copy(EXAMPLES_DIR / "write_test_data.py", tmp_path / "write_test_data.py")
 
     return subprocess.run(
         [sys.executable, script_name],
