@@ -50,9 +50,6 @@ from vine_reduce import serialization
 from vine_reduce.coffea import VineReduceCoffea
 from vine_reduce.taskvine_distributor import TaskVineDistributor
 
-JET_MEAN = 6.0  # per-event jet count, Poisson mean - high enough that most
-# events have the >=3 jets a trijet combination needs.
-
 # -----------------------------------------------------------------------
 # BOILERPLATE - synthetic-data plumbing only. Delete ensure_datasets() and
 # the build_datasets() call below once you have real files to point at;
@@ -87,7 +84,7 @@ def ensure_datasets(data_dir, *script_args):
 
 
 def trijet_processor(events):
-    """Runs remotely, once per Chunk of NanoEvents - Q6Processor.process's
+    """Runs remotely, once per chunk of NanoEvents - Q6Processor.process's
     body, unchanged, as a plain function (see module docstring). Swap this
     body (and the function's name, and the "trijet" key in main()'s
     `processors={...}` dict) for your own per-chunk analysis logic. The
@@ -152,6 +149,11 @@ def build_datasets(data_dir):
     for how it's read). Here it's generated (or reused) via
     ../write_test_data.py - see that script's module docstring for how the
     manifest it writes matches this shape."""
+
+    # per-event jet count, Poisson mean - high enough that most
+    # events have the >=3 jets a trijet combination needs.
+    JET_MEAN = 6.0
+
     return ensure_datasets(
         data_dir,
         "--dataset-names", "ttbar_like",
@@ -187,26 +189,116 @@ def main():
     # Same TaskVineDistributor + vine.Factory setup as ../cortado: one
     # local worker process, no cluster or separate vine_worker needed to run
     # this example standalone.
+    # environment=None here means tasks run in whatever Python env the
+    # worker was started with. Pass a poncho package/tarball path (see
+    # ndcctools.taskvine.Manager.declare_poncho) to ship a self-contained
+    # env instead, e.g. when workers run on nodes without this project
+    # pre-installed.
     distributor = TaskVineDistributor(
-        port=0, resources_processor={"cores": 1}, resources_reducer={"cores": 1}
+        port=0,
+        environment=None,
+        resources_processor={"cores": 1},
+        resources_reducer={"cores": 1}
     )
+
+    # Every VineReduceCoffea/VineReduce parameter, spelled out explicitly
+    # so this template shows the full surface area in one place. Commented
+    # parameters show defaults.
+    vr = VineReduceCoffea(
+        # --------- what to run, over what ---------
+        # {name: processor_fn} - one Pipeline per (processor, dataset) pair
+        processors={"trijet": trijet_processor},
+
+        # coffea-shaped dataset dict (or a json path) - see build_datasets()
+        input=datasets,
+
+        # extra kwargs passed to each processor call, beyond `events`
+        # processor_args=None,
+
+        # extra local files shipped to workers beyond the task itself
+        # extra_files=[],
+
+        # extra environment variables set for worker tasks
+        # environment_variables={},
+
+        # --- execution backend ---
+        # where processor/reducer calls actually run - a TaskVineDistributor here
+        distributor=distributor,
+
+        # --- final results ---
+        # where each dataset/processor's final result lands (see load_result)
+        results_dir=results_dir,
+
+        # copy each final result file back to local disk
+        # results_retrieve=True,
+
+        # by default, an accumulation counts as "final" once it covers every event of its
+        # dataset. Pass a function(num_events, total_time_s, total_memory_mb) -> bool
+        # instead to emit results in parts, e.g. every N events, every T seconds,
+        # or once M MB have accumulated.
+        # is_result=None,
+
+        # no transform applied to a final result before it's written out, akin to lambda x: x
+        # result_postprocess=None,
+
+
+        # --------- combining results ---------
+        # default reducer is akin to a += b, folds two chunks'/groups' results together,
+        # which already sums Hists and dicts of them.
+        # reducer=None
+
+        # how many results get folded together per reduction step
+        # reduction_size=10,
+
+        # --------- reading events out of a chunk ------------
+        # schema used to interpret each ROOT file's branches
+        # schema=coffea.nanoevents.NanoAODSchema,
+
+        # NanoEvents factory laziness mode - "virtual" arrays materialize on first use
+        # mode="virtual",
+
+        # TTree name read from each file
+        # object_path="Events",
+
+        # extra kwargs forwarded to uproot when opening each file
+        # uproot_options=None,
+
+        # ------ chunking / scheduling ------
+        # events per chunk; None (the default) -> one chunk per file
+        # chunksize=None,
+
+        # cap on chunks in flight (processing + reducing) at once
+        # max_chunks_active=1000,
+
+        # cap on new chunks submitted per scheduling-loop iteration
+        # max_chunks_cycle=100,
+
+        # ------ checkpointing / restart ------
+        # where intermediate (non-final) results and the checkpoint db live
+        checkpoint_dir=checkpoint_dir,
+
+        # whether each accumulation should be checkpointed
+        # checkpoint_accumulations=False,
+
+        # time-based (runtime seconds) checkpoint trigger
+        # checkpoint_time=None,
+
+        # memory-based (object's memory) checkpoint trigger
+        # checkpoint_size=None,
+
+        # copy each checkpoint's result file back to local disk, not just the distributor's cache
+        # checkpoint_retrieve=True,
+
+        # checkpoint_dir/vine_reduce.db; sqlite db tracking what's already been computed
+        # db_path=None,
+    )
+
     workers = vine.Factory(manager_host_port=f"localhost:{distributor.port}")
     workers.cores = 2
     workers.min_workers = 1
     workers.max_workers = 1
 
     with workers:
-        # reducer defaults to VineReduceCoffea's own default_reducer, which
-        # already knows how to sum a dict of Hist objects (see module
-        # docstring) - no custom reducer needed here, unlike cortado.
-        vr = VineReduceCoffea(
-            processors={"trijet": trijet_processor},
-            input=datasets,
-            chunksize=10000,
-            results_dir=results_dir,
-            checkpoint_dir=checkpoint_dir,
-            distributor=distributor,
-        )
         vr.compute()
     distributor.shutdown()
 
