@@ -129,8 +129,7 @@ from vine_reduce.taskvine_distributor import TaskVineDistributor
 
 
 def trijet_processor(events):
-    """Runs remotely, once per chunk of NanoEvents - Q6Processor.process's
-    body, unchanged, as a plain function (see module docstring). Swap this
+    """Runs remotely, once per chunk of NanoEvents. Swap this
     body (and the function's name, and the "trijet" key in main()'s
     `processors={...}` dict) for your own per-chunk analysis logic. The
     signature stays the same for any analysis: one `events` NanoEvents
