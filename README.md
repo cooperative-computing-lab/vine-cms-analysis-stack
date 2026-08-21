@@ -328,7 +328,7 @@ that concatenates awkward arrays — no real CMS data or `xrootd` access
 needed, and no separate `vine_worker` process to start by hand:
 
 ```bash
-cd vine_reduce/examples/cortado
+cd examples/cortado
 
 # conda
 conda activate vine-cms-example-stack
@@ -339,7 +339,7 @@ pixi run python vr_cortado.py
 ```
 
 The full, heavily-commented source is at
-[`examples/cortado/vr_cortado.py`](https://github.com/cooperative-computing-lab/vine_reduce/blob/main/examples/cortado/vr_cortado.py).
+[`examples/cortado/vr_cortado.py`](examples/cortado/vr_cortado.py).
 The shape of the call it makes is:
 
 ```python
@@ -391,7 +391,7 @@ TODO(btovar): fill in with the actual large-scale cortado run.
 
 stubs...
 ```bash
-cd vine_reduce/examples/cortado
+cd examples/cortado
 
 # conda
 conda activate vine-cms-example-stack
@@ -407,7 +407,7 @@ pixi run python vr_cortado.py
 top-quark EFT search that runs its analysis stage through `vine_reduce`
 on top of TaskVine, distributing histogram-filling processors over an
 HTCondor pool.
-[`vine_reduce`'s `examples/ttBar/run_processor_with_vr.py`](https://github.com/cooperative-computing-lab/vine_reduce/blob/main/examples/ttBar/run_processor_with_vr.py)
+[`examples/ttBar/run_processor_with_vr.py`](examples/ttBar/run_processor_with_vr.py)
 shows how that integration looked in practice: driving a `ttbarEFT`
 `AnalysisProcessor` per lepton channel through `vine_reduce`. It predates
 the current `VineReduceCoffea`/`TaskVineDistributor` API described above
