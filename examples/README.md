@@ -3,13 +3,18 @@
 The real physics examples live here, alongside this repo's Coffea/TaskVine
 setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
 
-- [`trijet/vr_trijet.py`](trijet/vr_trijet.py) — **start here.** ADL
-  benchmark Q6 (trijet pT / max b-tag histograms) from
+- [`trijet/vr_trijet.py`](trijet/vr_trijet.py) — **start here.** The
+  introductory template for adapting `VineReduceCoffea` to your own
+  analysis: ADL benchmark Q6 (trijet pT / max b-tag histograms) from
   [`coffea-benchmarks`](https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py),
   translated from a `coffea.processor.ProcessorABC` into a single, plain
   `VineReduceCoffea` processor function over synthetic NanoAOD-like ROOT
   files, no real CMS data needed - the smallest, most self-contained
-  example of the translation, alongside `cortado`.
+  example of the translation. Its comments mark the pieces meant to be
+  copied as-is ("BOILERPLATE") versus the ones to swap out for your own
+  analysis ("REPLACE": your data in `build_datasets()`, your per-chunk
+  logic in `trijet_processor()`, and your processor(s) in `main()`'s
+  `processors={...}` dict).
 - [`ADL/vr_adl_benchmarks.py`](ADL/vr_adl_benchmarks.py) — all eight
   [IRIS-HEP ADL benchmark](https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py)
   queries (Q1-Q8; `processors.py` holds the query bodies, including the
