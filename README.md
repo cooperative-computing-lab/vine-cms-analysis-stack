@@ -275,17 +275,35 @@ To adapt this into your own analysis, replace the pieces marked
 `processors={...}` entry in `main()`.
 
 See [`examples/README.md`](examples/README.md) for the full index of
-runnable examples — all eight ADL benchmarks, a skim with a custom
-reducer, and a real production integration — and
-[DOC.md](DOC.md) for everything else.
+runnable examples — all eight ADL benchmarks, plus two that have
+actually been run in production at Notre Dame, beyond the synthetic
+data shown on this page:
+[`examples/cortado`](examples/cortado/vr_cortado.py), a skim with a
+custom reducer that's also been run at scale (real-data results to
+follow), and, in
+[`examples/ttBar`](examples/ttBar/run_processor_with_vr.py), the
+[`TopEFT/ttbarEFT`](https://github.com/TopEFT/ttbarEFT) production
+integration: this is how that CMS top-quark EFT search has actually
+run its analysis stage through this stack, distributed over an
+HTCondor pool — see DOC.md's ["Production use:
+ttbarEFT"](DOC.md#production-use-ttbareft) for how that integration is
+wired up — and [DOC.md](DOC.md) for everything else.
 
 ## Further reading
 
 - [DOC.md](DOC.md) — full design rationale, `vine_reduce` concepts,
   packaging environments for TaskVine workers, and more
 - [examples/README.md](examples/README.md) — full index of runnable examples
+- [`examples/ttBar/run_processor_with_vr.py`](examples/ttBar/run_processor_with_vr.py)
+  — the real `ttbarEFT` production integration this stack runs at Notre
+  Dame (see [DOC.md](DOC.md#production-use-ttbareft) for context)
+- [`examples/cortado/vr_cortado.py`](examples/cortado/vr_cortado.py)
+  — a skim with a custom reducer, also run at scale at Notre Dame
+  (real-data results to follow)
 - [`vine_reduce` repository](https://github.com/cooperative-computing-lab/vine_reduce)
 - [TaskVine documentation](https://cctools.readthedocs.io/en/stable/taskvine)
+- [TopEFT/ttbarEFT](https://github.com/TopEFT/ttbarEFT) — the CMS
+  top-quark EFT search using this stack in production
 
 ## License
 
