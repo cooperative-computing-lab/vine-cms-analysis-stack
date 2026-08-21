@@ -3,10 +3,22 @@
 The real physics examples live here, alongside this repo's Coffea/TaskVine
 setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
 
-- [`quick_start/quick_start.py`](https://github.com/cooperative-computing-lab/vine_reduce/blob/main/examples/quick_start/quick_start.py)
-  (in `vine_reduce`, not here) — plain Python values chunked out of binary
-  files, no Coffea/awkward machinery. The fastest way to see
-  `chunk_to_args`, `processors`, and `reducer` wired together.
+- [`trijet/vr_trijet.py`](trijet/vr_trijet.py) — **start here.** ADL
+  benchmark Q6 (trijet pT / max b-tag histograms) from
+  [`coffea-benchmarks`](https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py),
+  translated from a `coffea.processor.ProcessorABC` into a single, plain
+  `VineReduceCoffea` processor function over synthetic NanoAOD-like ROOT
+  files, no real CMS data needed - the smallest, most self-contained
+  example of the translation, alongside `cortado`.
+- [`ADL/vr_adl_benchmarks.py`](ADL/vr_adl_benchmarks.py) — all eight
+  [IRIS-HEP ADL benchmark](https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py)
+  queries (Q1-Q8; `processors.py` holds the query bodies, including the
+  same `q6` as `trijet` above), translated the same way and run together
+  over one synthetic NanoAOD-like dataset. Shows that a coffea
+  `ProcessorABC`'s `process(self, events)` body drops in almost unchanged,
+  and that `VineReduceCoffea`'s `default_reducer` already knows how to sum
+  `Hist` histograms (or, for Q6, a dict of two) across chunks with no
+  custom reducer required (contrast with `cortado`'s `accumulate_skims`).
 - [`cortado/vr_cortado.py`](cortado/vr_cortado.py) — a HEP skim over
   synthetic NanoAOD-like ROOT files using `VineReduceCoffea`, no real CMS
   data or `xrootd` access needed. See the ["Quickstart: cortado on
@@ -21,7 +33,7 @@ setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
   See this repo's ["Production use:
   ttbarEFT"](../README.md#production-use-ttbareft) section for context.
 
-Run `cortado` or `ttBar` with `pixi run python <script>.py` from inside
+Run `trijet`, `ADL`, `cortado`, or `ttBar` with `pixi run python <script>.py` from inside
 this repo, or `python <script>.py` inside an activated `cms-stack` conda
 environment (see [Installation](../README.md#installation)). Run
 `quick_start` the same way, but from inside a `vine_reduce` checkout
