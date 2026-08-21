@@ -97,38 +97,11 @@ parameters trimmed for space — see the real file, linked above, for the
 fully annotated version showing every `VineReduceCoffea` parameter:
 
 ```python
-"""START HERE: the introductory example for adapting vine_reduce's
-VineReduceCoffea to your own coffea analysis, via the TaskVine executor.
-
-This file is a complete, working analysis - ADL benchmark Q6Processor from
-https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py
-(for events with at least three jets, plot the pT of the trijet
-four-momentum whose invariant mass is closest to 172.5 GeV, the top quark
-mass, and the maximum b-tag discriminant among that trijet's three jets;
-the same query also appears as `q6` in ../ADL/processors.py) - run over
-synthetic NanoAOD-like data so it works standalone, with no real CMS
-dataset or grid proxy needed.
-
-To turn this into *your* analysis, replace the three pieces marked
-"REPLACE" below, in this order:
-
-1. build_datasets() - point it at your own files instead of synthetic ones
-   (see its docstring for the exact shape VineReduceCoffea expects). The
-   "BOILERPLATE" section above it (ensure_datasets() and the
-   ../write_test_data.py subprocess call) is synthetic-data plumbing you
-   can delete entirely once you have real data.
-2. trijet_processor() - swap in your own per-chunk analysis logic. Keep
-   the signature (one `events` NanoEvents array in, any picklable object
-   out) - a coffea ProcessorABC.process(self, events) body drops in almost
-   unchanged. See ../ADL/vr_adl_benchmarks.py for eight more examples of
-   this translation, and ../cortado/vr_cortado.py for a case that also
-   needs a custom reducer (the default one just sums Hists, like this
-   file's processor returns).
-3. main()'s `processors={"trijet": trijet_processor}` - one entry per
-   (name, processor function) pair you want run; add more the same way
-   ../ADL/vr_adl_benchmarks.py does for its eight queries. Everything else
-   in main() (the TaskVine workers, VineReduceCoffea call, results
-   loading) is boilerplate that works unchanged for most analyses.
+"""
+To adapt this into your own analysis, replace the pieces marked
+`REPLACE` in the file: `datasets=...` (point it at your own files),
+`trijet_processor()` (your per-chunk analysis logic), and the
+`processors={...}` entry in `main()`.
 """
 
 from __future__ import annotations
@@ -268,11 +241,6 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-
-To adapt this into your own analysis, replace the pieces marked
-`REPLACE` in the file: `datasets=...` (point it at your own files),
-`trijet_processor()` (your per-chunk analysis logic), and the
-`processors={...}` entry in `main()`.
 
 See [`examples/README.md`](examples/README.md) for the full index of
 runnable examples — all eight ADL benchmarks, plus two that have
