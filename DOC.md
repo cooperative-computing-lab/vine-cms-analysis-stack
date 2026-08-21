@@ -182,37 +182,48 @@ A few consequences follow from the design above:
 
 ## Installation
 
-The only thing this repo depends on is `vine_reduce` itself; everything
-else (Coffea, TaskVine/`ndcctools`, awkward, uproot, ...) comes along as
-its dependencies, and `vine_reduce`'s own clone is where the environment
-gets set up. Python 3.13+ is required either way. `ndcctools` (which
-provides TaskVine) is a conda-forge-only package, so both options below
-go through a conda-forge channel rather than plain PyPI.
+Clone this repo - it carries its own `environment.yml`/`pyproject.toml`,
+so it's the only clone needed to start running or adapting the examples.
+Its dependencies are Coffea, TaskVine/`ndcctools`, awkward, uproot, ... and
+`vine_reduce` itself. Python 3.13+ is required either way. `ndcctools`
+(which provides TaskVine) is a conda-forge-only package, so both options
+below go through a conda-forge channel rather than plain PyPI.
 
 ```bash
-git clone https://github.com/cooperative-computing-lab/vine_reduce.git
-cd vine_reduce
+git clone https://github.com/cooperative-computing-lab/vine-cms-analysis-stack.git
+cd vine-cms-analysis-stack
 ```
+
+`vine_reduce` isn't published on PyPI yet (pending an organization
+authorization), so for now it has to be installed once, up front, from
+its own repository, into whichever environment is set up below:
+
+```bash
+git clone https://github.com/cooperative-computing-lab/vine_reduce.git /tmp/vine_reduce
+```
+
+Once it's on PyPI, that step goes away and `pip install .` below picks
+`vine_reduce` up on its own, like any other dependency.
+
 
 ### Option A: conda
 
 ```bash
 conda env create -f environment.yml
-conda activate vine-cms-example-stack
+conda activate vine-cms-analysis-stack
 
-pip install .        # or `pip install -e .` for an editable/development install
+# TODO: remove this step
+(cd /tmp/vine_reduce && pip install .)
 ```
-
-See `vine_reduce`'s own
-[`environment.yml`](https://github.com/cooperative-computing-lab/vine_reduce/blob/main/environment.yml)
-for the exact package list.
 
 ### Option B: pixi
 
 [pixi](https://pixi.sh) reproduces the same conda-forge environment from
-`vine_reduce`'s own `pyproject.toml`/`pixi.lock`, so it's an alternative
-to Option A for when the exact dependency versions should be pinned and
-managed automatically.
+this repo's own `pyproject.toml`/`pixi.lock`, so it's an alternative to
+Option A for when the exact dependency versions should be pinned and
+managed automatically. `pixi` clones and installs `vine_reduce` straight
+from its repository too (see `[tool.pixi.pypi-dependencies]` in
+`pyproject.toml`), so there's no separate step for it here.
 
 ```bash
 # Install pixi, if you don't already have it
@@ -220,6 +231,9 @@ curl -fsSL https://pixi.sh/install.sh | bash
 
 pixi install          # runtime environment
 pixi install -e dev   # optional: adds pytest, black, flake8, pyright
+
+# TODO: remove this step
+pixi run pip install .
 ```
 
 Run everything through `pixi run` (e.g. `pixi run python analysis_script.py`)
@@ -240,39 +254,44 @@ system needs nothing beyond TaskVine itself.
 The packed environment must be a real, self-contained install — not an
 editable one. An editable `pip install -e .` only writes a path pointer
 back to the local checkout; conda-packing it produces a tarball that
-still tries to import `vine_reduce` from a path that only exists on the
-machine that built it, which breaks the moment it's unpacked anywhere
-else. So building the tarball needs its own, non-editable install,
-separate from the editable one used for day-to-day development.
+still tries to import `vine_reduce` (or this repo's own code) from a path
+that only exists on the machine that built it, which breaks the moment
+it's unpacked anywhere else. So building the tarball needs its own,
+non-editable install, separate from the editable one used for day-to-day
+development.
 
 ### With conda
 
-Build a fresh, non-editable environment from `vine_reduce`'s own
+Build a fresh, non-editable environment from this repo's own
 `environment.yml` and pack it — this is the same recipe
 `poncho_package_run --help-env-creation` documents, with `conda-pack`
-added to the environment so it's available to run the pack step:
+added to the environment so it's available to run the pack step. `pip
+install .` for `vine_reduce` here is the same temporary, pre-PyPI step
+from "Installation" above, done non-editably this time:
 
 ```bash
-git clone https://github.com/cooperative-computing-lab/vine_reduce.git
-cd vine_reduce
-
 conda env create -p ./cms-stack-pack -f environment.yml
 conda activate ./cms-stack-pack
 conda install -c conda-forge conda-pack
 
-pip install .   # not -e .
+git clone https://github.com/cooperative-computing-lab/vine_reduce.git /tmp/vine_reduce
+(cd /tmp/vine_reduce && pip install .)   # not -e .
+
+pip install .   # not -e ., this repo's own dependencies
 
 conda-pack -p "$CONDA_PREFIX" -o cms-stack.tar.gz
 ```
 
 ### With pixi
 
-Add a second, dedicated pixi environment to `vine_reduce/pyproject.toml`
-that mirrors `default` but installs `vine_reduce` non-editably:
+Add a second, dedicated pixi environment to this repo's `pyproject.toml`
+that mirrors `default` but installs this repo's own code non-editably
+(`vine_reduce` is already installed non-editably in every environment,
+since a `git` pypi-dependency is always a real install, never editable):
 
 ```toml
 [tool.pixi.feature.pack.pypi-dependencies]
-vine_reduce = { path = ".", editable = false }
+vine-cms-analysis-stack = { path = ".", editable = false }
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
@@ -282,7 +301,8 @@ pack = { features = ["pack"], solve-group = "default" }
 
 `solve-group = "default"` keeps `pack` locked to the exact same package
 versions as `default`/`dev`, so the only difference is that one line:
-`vine_reduce` is installed for real instead of in editable mode. Then:
+this repo's own code is installed for real instead of in editable mode.
+Then:
 
 ```bash
 pixi install -e pack
@@ -331,7 +351,7 @@ needed, and no separate `vine_worker` process to start by hand:
 cd examples/cortado
 
 # conda
-conda activate vine-cms-example-stack
+conda activate vine-cms-analysis-stack
 python vr_cortado.py
 
 # pixi
@@ -394,7 +414,7 @@ stubs...
 cd examples/cortado
 
 # conda
-conda activate vine-cms-example-stack
+conda activate vine-cms-analysis-stack
 python vr_cortado.py
 
 # pixi
