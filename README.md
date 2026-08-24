@@ -1,5 +1,9 @@
 # Vine CMS Analysis Stack
 
+![vine-cms-analysis-stack banner: a VineReduceCoffea snippet, this stack's
+HTCondor pool at Notre Dame, and the ADL trijet benchmark this repo
+ships](docs/banner.svg)
+
 A reference stack for running CMS analysis
 workflows with [Coffea](https://github.com/scikit-hep/coffea) on top of
 [TaskVine](https://cctools.readthedocs.io/en/stable/taskvine), orchestrated
