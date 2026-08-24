@@ -251,86 +251,50 @@ declares as a [poncho package](https://cctools.readthedocs.io/en/stable/poncho)
 alongside the task and unpacks/activates it there, so the worker's host
 system needs nothing beyond TaskVine itself.
 
-The packed environment must be a real, self-contained install — not an
-editable one. An editable `pip install -e .` only writes a path pointer
-back to the local checkout; conda-packing it produces a tarball that
-still tries to import `vine_reduce` (or this repo's own code) from a path
-that only exists on the machine that built it, which breaks the moment
-it's unpacked anywhere else. So building the tarball needs its own,
-non-editable install, separate from the editable one used for day-to-day
-development.
-
-### With conda
-
-Build a fresh, non-editable environment from this repo's own
-`environment.yml` and pack it — this is the same recipe
-`poncho_package_run --help-env-creation` documents, with `conda-pack`
-added to the environment so it's available to run the pack step. `pip
-install .` for `vine_reduce` here is the same temporary, pre-PyPI step
-from "Installation" above, done non-editably this time:
-
-```bash
-conda env create -p ./cms-stack-pack -f environment.yml
-conda activate ./cms-stack-pack
-conda install -c conda-forge conda-pack
-
-git clone https://github.com/cooperative-computing-lab/vine_reduce.git /tmp/vine_reduce
-(cd /tmp/vine_reduce && pip install .)   # not -e .
-
-pip install .   # not -e ., this repo's own dependencies
-
-conda-pack -p "$CONDA_PREFIX" -o cms-stack.tar.gz
-```
-
-### With pixi
-
-Add a second, dedicated pixi environment to this repo's `pyproject.toml`
-that mirrors `default` but installs this repo's own code non-editably
-(`vine_reduce` is already installed non-editably in every environment,
-since a `git` pypi-dependency is always a real install, never editable):
-
-```toml
-[tool.pixi.feature.pack.pypi-dependencies]
-vine-cms-analysis-stack = { path = ".", editable = false }
-
-[tool.pixi.environments]
-default = { solve-group = "default" }
-dev = { features = ["dev"], solve-group = "default" }
-pack = { features = ["pack"], solve-group = "default" }
-```
-
-`solve-group = "default"` keeps `pack` locked to the exact same package
-versions as `default`/`dev`, so the only difference is that one line:
-this repo's own code is installed for real instead of in editable mode.
-Then:
-
-```bash
-pixi install -e pack
-pixi run -e pack conda-pack -p .pixi/envs/pack -o cms-stack.tar.gz
-```
-
-### Either way
-
-`conda-pack` writes its own `conda-unpack` script into the tarball, so
-nothing extra is needed for TaskVine to unpack and fix it up on the
-worker side.
-
-Point `TaskVineDistributor` at the result:
+`vine_reduce.get_environment()` builds that tarball for you, via
+`poncho_package_create` — no manual `conda-pack`/`pixi` bookkeeping
+needed. It packs `vine_reduce` itself by default; pass this repo's own
+checkout through `extra_pip` to include it too (a plain, non-editable pip
+install, so — unlike `pip install -e .` — the packed tarball never points
+back at a path that only exists on the machine that built it):
 
 ```python
+from pathlib import Path
+from vine_reduce import TaskVineDistributor, get_environment
+
+repo_root = Path(__file__).resolve().parent  # this repo's own checkout
+
+environment = get_environment(
+    extra_pip=[str(repo_root)],
+    # optional: rebuild automatically whenever this repo has uncommitted
+    # changes, the same way it already does for vine_reduce by default -
+    # see "Installation" for why this repo is normally installed editable.
+    pip_local_to_watch={"vine-cms-analysis-stack": ["examples", "pyproject.toml"]},
+)
+
 distributor = TaskVineDistributor(
     port=0,
     resources_processor={"cores": 1},
     resources_reducer={"cores": 1},
-    environment="cms-stack.tar.gz",
+    environment=environment,
 )
 ```
 
 Every processor/reducer task submitted through this `distributor` now
-runs inside `cms-stack.tar.gz`'s environment at the worker, regardless of
-what Python (if any) is installed on that machine. Rebuild and re-point
-`environment=` at a new tarball whenever `vine_reduce` or its
-dependencies change.
+runs inside that packed environment at the worker, regardless of what
+Python (if any) is installed on that machine. Builds are cached on disk
+(keyed by the resolved package spec) and reused across runs; `force=True`
+rebuilds unconditionally, and `unstaged="fail"` raises `UnstagedChanges`
+instead of silently rebuilding when a watched, editable checkout (this
+repo, `vine_reduce`, or anything else named in `pip_local_to_watch`) has
+uncommitted changes. Building requires `poncho_package_create` and `conda`
+on `PATH` — the same `ndcctools`/`conda` dependency TaskVine itself needs
+(see "Installation" above).
+
+See `vine_reduce`'s own README, ["Packaging an environment for remote
+workers"](https://github.com/cooperative-computing-lab/vine_reduce#packaging-an-environment-for-remote-workers),
+for the full `get_environment()` API, or reach for `poncho_package_create`
+directly if a build needs more control than a conda+pip spec allows.
 
 ## Quickstart: cortado on synthetic data
 
