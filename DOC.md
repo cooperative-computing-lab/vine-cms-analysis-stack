@@ -1,12 +1,10 @@
-# Vine CMS Analysis Stack
+# Vine CMS Analysis Stack: reference
 
-A reference stack for running CMS analysis
-workflows with [Coffea](https://github.com/scikit-hep/coffea) on top of
-[TaskVine](https://cctools.readthedocs.io/en/stable/taskvine), orchestrated
-by [`vine_reduce`](https://github.com/cooperative-computing-lab/vine_reduce).
-Nothing here depends on Notre Dame resources, so it should work anywhere
-there's a Python environment and either local cores or a batch cluster
-(HTCondor, SLURM, SGE, ...) to point workers at.
+`vine_reduce` concepts, packaging environments for
+remote workers, and production usage notes for the stack introduced in
+[README.md](README.md) — start there for installation and a working
+example; this document is for understanding *why* the stack is shaped
+the way it is and *how* its pieces fit together.
 
 ## Shape of the stack
 
@@ -17,6 +15,7 @@ remotely, once per chunk, on whatever worker picks it up:
 ```text
        local (x1)
 +---------------------+
+|     application +   |
 |     physics code    |
 +---------------------+
 |     vine_reduce     |
@@ -28,6 +27,8 @@ remotely, once per chunk, on whatever worker picks it up:
       remote (xN)
 +---------------------+
 |       executor      |
++---------------------+
+|     physics code    |
 +---------------------+
 ```
 
@@ -47,10 +48,12 @@ slot is what varies:
            v                           v
       remote (xN)                 remote (xN)
 +---------------------+     +---------------------+
-|        Coffea       |     |   ROOT RDataFrame   |
-| + virtual arrays or |     +---------------------+
-|        + dask       |
-+---------------------+
+|        Coffea       |     |                     |
+| + virtual arrays or |     |   ROOT RDataFrame   |
+|        + dask       |     |                     |
++---------------------+     +---------------------+
+|     physics code    |     |     physics code    |
++---------------------+     +---------------------+
 ```
 
 At Notre Dame the executors run as individual tasks, one per chunk, inside
@@ -182,63 +185,10 @@ A few consequences follow from the design above:
 
 ## Installation
 
-Clone this repo - it carries its own `environment.yml`/`pyproject.toml`,
-so it's the only clone needed to start running or adapting the examples.
-Its dependencies are Coffea, TaskVine/`ndcctools`, awkward, uproot, ... and
-`vine_reduce` itself. Python 3.13+ is required either way. `ndcctools`
-(which provides TaskVine) is a conda-forge-only package, so both options
-below go through a conda-forge channel rather than plain PyPI.
-
-```bash
-git clone https://github.com/cooperative-computing-lab/vine-cms-analysis-stack.git
-cd vine-cms-analysis-stack
-```
-
-`vine_reduce` isn't published on PyPI yet (pending an organization
-authorization), so for now it has to be installed once, up front, from
-its own repository, into whichever environment is set up below:
-
-```bash
-git clone https://github.com/cooperative-computing-lab/vine_reduce.git /tmp/vine_reduce
-```
-
-Once it's on PyPI, that step goes away and `pip install .` below picks
-`vine_reduce` up on its own, like any other dependency.
-
-
-### Option A: conda
-
-```bash
-conda env create -f environment.yml
-conda activate vine-cms-analysis-stack
-
-# TODO: remove this step
-(cd /tmp/vine_reduce && pip install .)
-```
-
-### Option B: pixi
-
-[pixi](https://pixi.sh) reproduces the same conda-forge environment from
-this repo's own `pyproject.toml`/`pixi.lock`, so it's an alternative to
-Option A for when the exact dependency versions should be pinned and
-managed automatically. `pixi` clones and installs `vine_reduce` straight
-from its repository too (see `[tool.pixi.pypi-dependencies]` in
-`pyproject.toml`), so there's no separate step for it here.
-
-```bash
-# Install pixi, if you don't already have it
-curl -fsSL https://pixi.sh/install.sh | bash
-
-pixi install          # runtime environment
-pixi install -e dev   # optional: adds pytest, black, flake8, pyright
-
-# TODO: remove this step
-pixi run pip install .
-```
-
-Run everything through `pixi run` (e.g. `pixi run python analysis_script.py`)
-so it picks up the managed environment, or drop into `pixi shell` for the
-rest of the session.
+See [README.md's Installation section](README.md#installation) for
+cloning the repo and setting up the conda/pixi environment — including
+the one-time `vine_reduce` install from source, needed only because
+`vine_reduce` isn't on PyPI yet (pending an organization authorization).
 
 ## Packaging the environment for TaskVine workers
 
@@ -405,11 +355,12 @@ examples.
 ## Further reading
 
 - [`vine_reduce` design concepts (presentation)](https://docs.google.com/presentation/d/1C1e9BFT1-jZIi08ZGsBuaIqSFFA-ulvQ2SVqGH-D80k/edit?slide=id.g345a2bdd640_4_10#slide=id.g345a2bdd640_4_10)
-- [`vine_reduce` repository](https://github.com/cooperative-computing-lab/vine_reduce)
-- [TaskVine documentation](https://cctools.readthedocs.io/en/stable/taskvine)
 - [Coffea](https://github.com/scikit-hep/coffea)
 - [coffea-workflow](https://github.com/CoffeaTeam/coffea-workflow)
-- [ttbarEFT](https://github.com/TopEFT/ttbarEFT)
+
+See [README.md's Further reading](README.md#further-reading) for the
+`vine_reduce` repository, TaskVine documentation, the example index, and
+the `ttbarEFT` production integration.
 
 ## License
 
