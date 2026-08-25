@@ -71,9 +71,6 @@ curl -fsSL https://pixi.sh/install.sh | bash   # if you don't already have pixi
 
 pixi install          # runtime environment
 pixi install -e dev   # optional: adds pytest, black, flake8, pyright
-
-# TODO: remove this step once vine_reduce is on PyPI
-pixi run pip install .
 ```
 
 Run everything through `pixi run` (e.g. `pixi run python analysis_script.py`)
