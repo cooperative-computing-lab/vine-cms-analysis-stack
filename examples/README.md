@@ -41,11 +41,22 @@ setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
   See DOC.md's ["Production use:
   ttbarEFT"](../DOC.md#production-use-ttbareft) section for context.
 
-Run `trijet`, `ADL`, `cortado`, or `ttBar` with `pixi run python <script>.py` from inside
-this repo, or `python <script>.py` inside an activated `vine-cms-analysis-stack` conda
-environment (see [Installation](../DOC.md#installation)). Run
-`quick_start` the same way, but from inside a `vine_reduce` checkout
-instead, since that's where it lives.
+## Running the examples
+
+Set up the environment once (see [README.md's Installation
+section](../README.md#installation)), then run `trijet`, `ADL`, `cortado`,
+or `ttBar` from inside this repo, like:
+
+```bash
+cd examples/trijet   # or ADL, cortado, ttBar
+
+# conda
+conda activate vine-cms-analysis-stack
+python vr_trijet_taskvine.py
+
+# pixi
+pixi run python vr_trijet_taskvine.py
+```
 
 `trijet`, `ADL`, and `cortado` all generate their synthetic NanoAOD-like
 ROOT files the same way, via the shared
