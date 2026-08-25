@@ -14,7 +14,7 @@ This script only talks to a real cluster: it opens a `vine.Manager` on
 `--port` and waits for independently-launched `vine_worker` processes (or a
 batch-system submission, e.g. `condor_submit_workers`) to connect - it does
 not spawn any workers itself. See
-[`vine_reduce`'s `examples/quick_start`](https://github.com/cooperative-computing-lab/vine_reduce/tree/main/examples/quick_start)
+[`vine_reduce`'s `examples/quick_start`](https://github.com/cooperative-computing-lab/vine-reduce/tree/main/examples/quick_start)
 and `../cortado` in this repo for the local, self-contained
 (`vine.Factory`-based) pattern instead, if you just want to try
 `vine_reduce` out without a cluster.

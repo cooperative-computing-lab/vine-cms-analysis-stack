@@ -7,13 +7,13 @@ ships](docs/banner.svg)
 A reference stack for running CMS analysis
 workflows with [Coffea](https://github.com/scikit-hep/coffea) on top of
 [TaskVine](https://cctools.readthedocs.io/en/stable/taskvine), orchestrated
-by [`vine_reduce`](https://github.com/cooperative-computing-lab/vine_reduce).
+by [VineReduce](https://github.com/cooperative-computing-lab/vine-reduce).
 Nothing here depends on Notre Dame resources, so it should work anywhere
 there's a Python environment and either local cores or a batch cluster
 (HTCondor, SLURM, SGE, ...) to point workers at.
 
 This README covers setting up the environment and running an example
-analysis. For everything else — why `vine_reduce` exists, how the
+analysis. For everything else — why VineReduce exists, how the
 distributor/executor split works, packaging environments for remote
 workers, and the full example index — see **[DOC.md](DOC.md)**.
 
@@ -30,12 +30,12 @@ git clone https://github.com/cooperative-computing-lab/vine-cms-analysis-stack.g
 cd vine-cms-analysis-stack
 ```
 
-`vine_reduce` isn't published on PyPI yet, so for now it has to be
+VineReduce isn't published on PyPI yet, so for now it has to be
 installed once, up front, from its own repository, into whichever
 environment is set up below:
 
 ```bash
-git clone https://github.com/cooperative-computing-lab/vine_reduce.git /tmp/vine_reduce
+git clone https://github.com/cooperative-computing-lab/vine-reduce.git /tmp/vine-reduce
 ```
 
 ### Option A: conda
@@ -44,27 +44,27 @@ git clone https://github.com/cooperative-computing-lab/vine_reduce.git /tmp/vine
 conda env create -f environment.yml
 conda activate vine-cms-analysis-stack
 
-# TODO: remove this step once vine_reduce is on PyPI
-(cd /tmp/vine_reduce && pip install .)
+# TODO: remove this step once vine-reduce is on PyPI
+(cd /tmp/vine-reduce && pip install .)
 ```
 
 Recommended alternative: if your conda has the
 [`conda-pypi`](https://github.com/conda/conda-pypi) plugin installed
 (`conda install -n base -c conda-forge conda-pypi`), use `conda pypi
-install` instead of `pip install` — it resolves as many of `vine_reduce`'s
+install` instead of `pip install` — it resolves as many of VineReduce's
 dependencies as it can from conda-forge instead of PyPI, and installs
 straight into the target environment regardless of what's activated, so
 there's no risk of it landing in the wrong environment:
 
 ```bash
-conda pypi install -n vine-cms-analysis-stack -e /tmp/vine_reduce
+conda pypi install -n vine-cms-analysis-stack -e /tmp/vine-reduce
 ```
 
 ### Option B: pixi
 
 [pixi](https://pixi.sh) reproduces the same conda-forge environment from
 this repo's own `pyproject.toml`/`pixi.lock`, pinned and managed
-automatically; it also clones and installs `vine_reduce` on its own.
+automatically; it also clones and installs VineReduce on its own.
 
 ```bash
 curl -fsSL https://pixi.sh/install.sh | bash   # if you don't already have pixi
@@ -84,7 +84,7 @@ workers"](DOC.md#packaging-the-environment-for-taskvine-workers) in DOC.md.
 ## Example: running an analysis
 
 [`examples/trijet/vr_trijet.py`](examples/trijet/vr_trijet.py) is the
-introductory template for adapting `vine_reduce`'s `VineReduceCoffea` to
+introductory template for adapting VineReduce's `VineReduceCoffea` to
 your own Coffea analysis. It's a complete, working analysis — ADL
 benchmark Q6 (for events with at least three jets, plot the pT of the
 trijet four-momentum whose invariant mass is closest to the top quark
@@ -271,7 +271,7 @@ wired up — and [DOC.md](DOC.md) for everything else.
 
 ## Further reading
 
-- [DOC.md](DOC.md) — full design rationale, `vine_reduce` concepts,
+- [DOC.md](DOC.md) — full design rationale, VineReduce concepts,
   packaging environments for TaskVine workers, and more
 - [examples/README.md](examples/README.md) — full index of runnable examples
 - [`examples/ttBar/run_processor_with_vr.py`](examples/ttBar/run_processor_with_vr.py)
@@ -280,7 +280,7 @@ wired up — and [DOC.md](DOC.md) for everything else.
 - [`examples/cortado/vr_cortado.py`](examples/cortado/vr_cortado.py)
   — a skim with a custom reducer, also run at scale at Notre Dame
   (real-data results to follow)
-- [`vine_reduce` repository](https://github.com/cooperative-computing-lab/vine_reduce)
+- [VineReduce repository](https://github.com/cooperative-computing-lab/vine-reduce)
 - [TaskVine documentation](https://cctools.readthedocs.io/en/stable/taskvine)
 - [TopEFT/ttbarEFT](https://github.com/TopEFT/ttbarEFT) — the CMS
   top-quark EFT search using this stack in production

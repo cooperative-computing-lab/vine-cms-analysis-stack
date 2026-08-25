@@ -93,7 +93,7 @@ xrootd = ">=5.8.4"
 vine-cms-analysis-stack = { path = ".", editable = true }
 # Temporary, until vine_reduce is published on PyPI: pixi clones and installs
 # it straight from its own repository instead of resolving it from an index.
-vine_reduce = { git = "https://github.com/cooperative-computing-lab/vine_reduce.git" }
+vine_reduce = { git = "https://github.com/cooperative-computing-lab/vine-reduce.git" }
 
 [tool.pixi.feature.dev.dependencies]
 pytest = ">=6.0"
