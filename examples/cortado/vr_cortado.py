@@ -1,12 +1,11 @@
 """HEP skim tutorial: vine_reduce.VineReduceCoffea over synthetic NanoAOD-like
 data, via the TaskVine executor.
 
-Adapted from the "cortado" example in
-https://github.com/cooperative-computing-lab/dynamic_data_reduction (the
-predecessor this project's dynamic map-reduce loop is based on): a coffea
+Adapted from the cortado example in
+https://github.com/cooperative-computing-lab/cortado: a coffea
 processor skims events down to the ones with at least four leptons, and a
 custom reducer concatenates the surviving events from every chunk into one
-growing awkward array per dataset, exactly like DynamicDataReduction's own
+growing awkward array per dataset, exactly like cortado's own
 "accumulator" hook. Dropped relative to the original: ROOT output (this
 example writes plain parquet, see load_skim below), on-site condor/xrootd
 config (samples here are local synthetic files, not a real CMS dataset), and
@@ -61,7 +60,7 @@ from vine_reduce.coffea import VineReduceCoffea
 from vine_reduce.taskvine_distributor import TaskVineDistributor
 
 CHUNKSIZE = 150
-FILES_PER_DATASET = 3
+FILES_PER_DATASET = 10
 DATASET_LEPTON_MEANS = {"signal": 3.0, "background": 1.0}
 
 
@@ -127,6 +126,8 @@ def build_datasets(data_dir):
         "--dataset-names", *dataset_names,
         "--num-datasets", str(len(dataset_names)),
         "--num-files", str(FILES_PER_DATASET),
+        "--min-events", "1000",
+        "--max-events", "5000",
         "--muon-mean", *lepton_means,
         "--electron-mean", *lepton_means,
     )

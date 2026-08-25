@@ -128,16 +128,19 @@ def write_root_file(
 def _generate_dataset_files(
     dataset_dir: str,
     num_files: int,
+    min_events: int,
+    max_events: int,
     jet_mean: float,
     muon_mean: float,
     electron_mean: float,
     rng: np.random.Generator,
 ) -> dict[str, int]:
     """Writes num_files ROOT files under dataset_dir, each with a random
-    event count in [300, 500). Returns {absolute_path: num_events}."""
+    event count in [min_events, max_events). Returns {absolute_path:
+    num_events}."""
     files = {}
     for i in range(num_files):
-        num_events = int(rng.integers(300, 500))
+        num_events = int(rng.integers(min_events, max_events))
         path = os.path.abspath(os.path.join(dataset_dir, f"file_{i}.root"))
         write_root_file(path, num_events, jet_mean, muon_mean, electron_mean, rng)
         files[path] = num_events
@@ -166,6 +169,12 @@ def main() -> None:
         help="One name per dataset; defaults to dataset_0 .. dataset_{n-1}.",
     )
     parser.add_argument("--num-files", type=int, default=3, help="ROOT files per dataset.")
+    parser.add_argument(
+        "--min-events", type=int, default=500, help="Minimum events per file."
+    )
+    parser.add_argument(
+        "--max-events", type=int, default=1000, help="Maximum events per file (exclusive)."
+    )
     parser.add_argument("--jet-mean", type=float, nargs="+", default=[6.0])
     parser.add_argument("--muon-mean", type=float, nargs="+", default=[3.0])
     parser.add_argument("--electron-mean", type=float, nargs="+", default=[2.0])
@@ -196,7 +205,14 @@ def main() -> None:
         dataset_dir = os.path.join(args.data_dir, name)
         os.makedirs(dataset_dir, exist_ok=True)
         files = _generate_dataset_files(
-            dataset_dir, args.num_files, jet_mean, muon_mean, electron_mean, rng
+            dataset_dir,
+            args.num_files,
+            args.min_events,
+            args.max_events,
+            jet_mean,
+            muon_mean,
+            electron_mean,
+            rng,
         )
         manifest[name] = {
             "metadata": {},

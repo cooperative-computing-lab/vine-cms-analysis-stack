@@ -250,9 +250,8 @@ directly if a build needs more control than a conda+pip spec allows.
 VineReduce ships a runnable example built around
 [`VineReduceCoffea`](https://github.com/cooperative-computing-lab/vine-reduce/blob/main/src/vine_reduce/coffea.py),
 the Coffea specialization of `VineReduce`. It's adapted from the
-["cortado" example](https://github.com/cooperative-computing-lab/dynamic_data_reduction/tree/main/examples/cortado)
-in `dynamic_data_reduction`, the project VineReduce's dynamic
-map-reduce loop descends from.
+["cortado" example](https://github.com/cooperative-computing-lab/cortado)
+in `cortado`.
 
 It generates synthetic NanoAOD-like ROOT files for two datasets
 (`signal` and `background`), skims each down to events with at least
