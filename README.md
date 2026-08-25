@@ -48,6 +48,18 @@ conda activate vine-cms-analysis-stack
 (cd /tmp/vine_reduce && pip install .)
 ```
 
+Recommended alternative: if your conda has the
+[`conda-pypi`](https://github.com/conda/conda-pypi) plugin installed
+(`conda install -n base -c conda-forge conda-pypi`), use `conda pypi
+install` instead of `pip install` — it resolves as many of `vine_reduce`'s
+dependencies as it can from conda-forge instead of PyPI, and installs
+straight into the target environment regardless of what's activated, so
+there's no risk of it landing in the wrong environment:
+
+```bash
+conda pypi install -n vine-cms-analysis-stack -e /tmp/vine_reduce
+```
+
 ### Option B: pixi
 
 [pixi](https://pixi.sh) reproduces the same conda-forge environment from
