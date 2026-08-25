@@ -1,5 +1,8 @@
 """START HERE: the introductory example for adapting vine_reduce's
-VineReduceCoffea to your own coffea analysis, via the TaskVine executor.
+VineReduceCoffea to your own coffea analysis, via the TaskVine distributor.
+See vr_trijet_iterative.py in this same directory for the same example run
+through LocalDistributor instead - no cluster or vine_factory/vine_worker
+needed, useful for a quick local check.
 
 This file is a complete, working analysis - ADL benchmark Q6Processor from
 https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py

@@ -58,7 +58,13 @@ def _run_example(
 
 
 def test_trijet_example(tmp_path):
-    result = _run_example(tmp_path, "trijet", "vr_trijet.py")
+    result = _run_example(tmp_path, "trijet", "vr_trijet_taskvine.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "OK: trijet histograms filled for the large majority of events" in result.stdout
+
+
+def test_trijet_iterative_example(tmp_path):
+    result = _run_example(tmp_path, "trijet", "vr_trijet_iterative.py")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "OK: trijet histograms filled for the large majority of events" in result.stdout
 

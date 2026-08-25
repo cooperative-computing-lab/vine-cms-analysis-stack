@@ -73,14 +73,18 @@ workers"](DOC.md#packaging-the-environment-for-taskvine-workers) in DOC.md.
 
 ## Example: running an analysis
 
-[`examples/trijet/vr_trijet.py`](examples/trijet/vr_trijet.py) is the
-introductory template for adapting VineReduce's `VineReduceCoffea` to
-your own Coffea analysis. It's a complete, working analysis — ADL
+[`examples/trijet/vr_trijet_taskvine.py`](examples/trijet/vr_trijet_taskvine.py)
+is the introductory template for adapting VineReduce's `VineReduceCoffea`
+to your own Coffea analysis. It's a complete, working analysis — ADL
 benchmark Q6 (for events with at least three jets, plot the pT of the
 trijet four-momentum whose invariant mass is closest to the top quark
 mass, and the max b-tag discriminant among that trijet's jets) — run over
 synthetic NanoAOD-like data, so it works standalone with no real CMS
 dataset or grid proxy needed.
+[`examples/trijet/vr_trijet_iterative.py`](examples/trijet/vr_trijet_iterative.py)
+is the same example run over `LocalDistributor` instead of TaskVine — no
+cluster or `vine_factory`/`vine_worker` needed, useful for a quick local
+check.
 
 Run it from inside this repo:
 
@@ -89,10 +93,10 @@ cd examples/trijet
 
 # conda
 conda activate vine-cms-analysis-stack
-python vr_trijet.py
+python vr_trijet_taskvine.py
 
 # pixi
-pixi run python vr_trijet.py
+pixi run python vr_trijet_taskvine.py
 ```
 
 Its source is reproduced below, with the commented-out default

@@ -3,9 +3,10 @@
 The real physics examples live here, alongside this repo's Coffea/TaskVine
 setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
 
-- [`trijet/vr_trijet.py`](trijet/vr_trijet.py) — **start here.** The
-  introductory template for adapting `VineReduceCoffea` to your own
-  analysis: ADL benchmark Q6 (trijet pT / max b-tag histograms) from
+- [`trijet/vr_trijet_taskvine.py`](trijet/vr_trijet_taskvine.py) —
+  **start here.** The introductory template for adapting
+  `VineReduceCoffea` to your own analysis: ADL benchmark Q6 (trijet pT /
+  max b-tag histograms) from
   [`coffea-benchmarks`](https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py),
   translated from a `coffea.processor.ProcessorABC` into a single, plain
   `VineReduceCoffea` processor function over synthetic NanoAOD-like ROOT
@@ -14,7 +15,10 @@ setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
   copied as-is ("BOILERPLATE") versus the ones to swap out for your own
   analysis ("REPLACE": your data in `build_datasets()`, your per-chunk
   logic in `trijet_processor()`, and your processor(s) in `main()`'s
-  `processors={...}` dict).
+  `processors={...}` dict). Runs over `TaskVineDistributor`;
+  [`trijet/vr_trijet_iterative.py`](trijet/vr_trijet_iterative.py) is the
+  same example run over `LocalDistributor` instead - no cluster or
+  `vine_factory`/`vine_worker` needed, useful for a quick local check.
 - [`ADL/vr_adl_benchmarks.py`](ADL/vr_adl_benchmarks.py) — all eight
   [IRIS-HEP ADL benchmark](https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py)
   queries (Q1-Q8; `processors.py` holds the query bodies, including the
