@@ -30,22 +30,12 @@ git clone https://github.com/cooperative-computing-lab/vine-cms-analysis-stack.g
 cd vine-cms-analysis-stack
 ```
 
-VineReduce isn't published on PyPI yet, so for now it has to be
-installed once, up front, from its own repository, into whichever
-environment is set up below:
-
-```bash
-git clone https://github.com/cooperative-computing-lab/vine-reduce.git /tmp/vine-reduce
-```
-
 ### Option A: conda
 
 ```bash
 conda env create -f environment.yml
 conda activate vine-cms-analysis-stack
-
-# TODO: remove this step once vine-reduce is on PyPI
-(cd /tmp/vine-reduce && pip install .)
+pip install vine-reduce
 ```
 
 Recommended alternative: if your conda has the
@@ -57,14 +47,14 @@ straight into the target environment regardless of what's activated, so
 there's no risk of it landing in the wrong environment:
 
 ```bash
-conda pypi install -n vine-cms-analysis-stack -e /tmp/vine-reduce
+conda pypi install -n vine-cms-analysis-stack vine-reduce
 ```
 
 ### Option B: pixi
 
 [pixi](https://pixi.sh) reproduces the same conda-forge environment from
 this repo's own `pyproject.toml`/`pixi.lock`, pinned and managed
-automatically; it also clones and installs VineReduce on its own.
+automatically; it also installs VineReduce from PyPI on its own.
 
 ```bash
 curl -fsSL https://pixi.sh/install.sh | bash   # if you don't already have pixi

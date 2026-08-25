@@ -186,9 +186,8 @@ A few consequences follow from the design above:
 ## Installation
 
 See [README.md's Installation section](README.md#installation) for
-cloning the repo and setting up the conda/pixi environment — including
-the one-time VineReduce install from source, needed only because
-VineReduce isn't on PyPI yet (pending an organization authorization).
+cloning the repo and setting up the conda/pixi environment, which
+installs VineReduce from PyPI along with everything else.
 
 ## Packaging the environment for TaskVine workers
 
