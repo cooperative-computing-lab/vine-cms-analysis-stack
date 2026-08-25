@@ -340,13 +340,15 @@ top-quark EFT search that runs its analysis stage through VineReduce
 on top of TaskVine, distributing histogram-filling processors over an
 HTCondor pool.
 [`examples/ttBar/run_processor_with_vr.py`](examples/ttBar/run_processor_with_vr.py)
-shows how that integration looked in practice: driving a `ttbarEFT`
-`AnalysisProcessor` per lepton channel through VineReduce. It predates
-the current `VineReduceCoffea`/`TaskVineDistributor` API described above
-(it was written against an earlier VineReduce release), so treat it as
-a reference for how a full physics analysis wires up channels,
-Wilson-coefficient/histogram selection, and X509 proxy handling around
-VineReduce, not as a runnable script against the current API. See
+shows how that integration looks in practice: driving a `ttbarEFT`
+`AnalysisProcessor` per lepton channel through the current
+`VineReduceCoffea`/`TaskVineDistributor` API described above. Unlike the
+other examples, it only talks to a real cluster (a manager-only
+`TaskVineDistributor` waiting for independently-launched workers, not a
+local `vine.Factory`), so treat it as a reference for how a full physics
+analysis wires up channels, Wilson-coefficient/histogram selection, and
+X509 proxy handling around VineReduce, not as a script you run
+standalone without a cluster. See
 [`examples/README.md`](examples/README.md) for a full index of runnable
 examples.
 

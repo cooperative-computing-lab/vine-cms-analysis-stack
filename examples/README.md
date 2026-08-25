@@ -34,11 +34,13 @@ setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
   synthetic data"](../DOC.md#quickstart-cortado-on-synthetic-data)
   section of DOC.md for the call shape and how it maps onto this stack.
 - [`ttBar/run_processor_with_vr.py`](ttBar/run_processor_with_vr.py) — the
-  `ttbarEFT` production integration. Predates the current
-  `VineReduceCoffea`/`TaskVineDistributor` API, so it's a reference for
-  how a full physics analysis wires up channels, histogram selection, and
-  X509 proxy handling — not a runnable script against the current API.
-  See DOC.md's ["Production use:
+  `ttbarEFT` production integration, on the current
+  `VineReduceCoffea`/`TaskVineDistributor` API. Unlike the other examples,
+  it targets a real cluster (a manager-only `TaskVineDistributor` over
+  independently-launched workers, not a local `vine.Factory`), so it's a
+  reference for how a full physics analysis wires up channels, histogram
+  selection, and X509 proxy handling — not a script you run standalone
+  without a cluster. See DOC.md's ["Production use:
   ttbarEFT"](../DOC.md#production-use-ttbareft) section for context.
 
 ## Running the examples
