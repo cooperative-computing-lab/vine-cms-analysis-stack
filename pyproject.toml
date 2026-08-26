@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "vine-cms-analysis-stack"
 version = "0.1.0"
-description = "Reference stack for running CMS analyses with Coffea and vine_reduce on TaskVine"
+description = "Reference stack for running CMS analyses with Coffea and vine-reduce on TaskVine"
 readme = "DOC.md"
 license = "GPL-2.0-or-later"
 authors = [
@@ -29,7 +29,7 @@ dependencies = [
     "rich>=14.2.0",
     "uproot>=5.6.6",
     "xrootd>=5.8.4",
-    "vine_reduce>=2026.8.26",
+    "vine_reduce>=2026.8.1",
 ]
 
 [project.optional-dependencies]
