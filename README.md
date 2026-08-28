@@ -35,19 +35,6 @@ cd vine-cms-analysis-stack
 ```bash
 conda env create -f environment.yml
 conda activate vine-cms-analysis-stack
-pip install "vine-reduce>=2026.8.1"
-```
-
-Recommended alternative: if your conda has the
-[`conda-pypi`](https://github.com/conda/conda-pypi) plugin installed
-(`conda install -n base -c conda-forge conda-pypi`), use `conda pypi
-install` instead of `pip install` — it resolves as many of VineReduce's
-dependencies as it can from conda-forge instead of PyPI, and installs
-straight into the target environment regardless of what's activated, so
-there's no risk of it landing in the wrong environment:
-
-```bash
-conda pypi install -n vine-cms-analysis-stack "vine-reduce>=2026.8.1"
 ```
 
 ### Option B: pixi

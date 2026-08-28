@@ -14,3 +14,5 @@ dependencies:
   - pip
   - setuptools<81
   - zstandard>=0.25.0
+  - pip:
+      - vine-reduce>=2026.8.1
