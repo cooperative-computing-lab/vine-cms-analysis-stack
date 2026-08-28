@@ -201,7 +201,8 @@ def main():
         port=0,
         environment=None,
         resources_processor={"cores": 1},
-        resources_reducer={"cores": 1}
+        resources_reducer={"cores": 1},
+        checkpoint_dir=checkpoint_dir,
     )
 
     # Every VineReduceCoffea/VineReduce parameter, spelled out explicitly
@@ -231,9 +232,6 @@ def main():
         # --- final results ---
         # where each dataset/processor's final result lands (see load_result)
         results_dir=results_dir,
-
-        # copy each final result file back to local disk
-        # results_retrieve=True,
 
         # by default, an accumulation counts as "final" once it covers every event of its
         # dataset. Pass a function(num_events, total_time_s, total_memory_mb) -> bool
@@ -277,8 +275,8 @@ def main():
         # max_chunks_cycle=100,
 
         # ------ checkpointing / restart ------
-        # where intermediate (non-final) results and the checkpoint db live
-        checkpoint_dir=checkpoint_dir,
+        # non-final checkpoints themselves are the distributor's concern
+        # (see TaskVineDistributor's checkpoint_dir above), not VineReduce's
 
         # whether each accumulation should be checkpointed
         # checkpoint_accumulations=False,
@@ -286,13 +284,10 @@ def main():
         # time-based (runtime seconds) checkpoint trigger
         # checkpoint_time=None,
 
-        # memory-based (object's memory) checkpoint trigger
-        # checkpoint_size=None,
+        # distance-based (accumulations since last checkpoint) checkpoint trigger
+        # checkpoint_distance=None,
 
-        # copy each checkpoint's result file back to local disk, not just the distributor's cache
-        # checkpoint_retrieve=True,
-
-        # checkpoint_dir/vine_reduce.db; sqlite db tracking what's already been computed
+        # results_dir/vine_reduce.db; sqlite db tracking what's already been computed
         # db_path=None,
     )
 

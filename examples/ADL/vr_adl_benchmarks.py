@@ -151,7 +151,10 @@ def main():
     # local worker process, no cluster or separate vine_worker needed to run
     # this example standalone.
     distributor = TaskVineDistributor(
-        port=0, resources_processor={"cores": 1}, resources_reducer={"cores": 1}
+        port=0,
+        resources_processor={"cores": 1},
+        resources_reducer={"cores": 1},
+        checkpoint_dir=checkpoint_dir,
     )
     workers = vine.Factory(manager_host_port=f"localhost:{distributor.port}")
     workers.cores = 2
@@ -167,7 +170,6 @@ def main():
             input=datasets,
             chunksize=CHUNKSIZE,
             results_dir=results_dir,
-            checkpoint_dir=checkpoint_dir,
             distributor=distributor,
             # q1..q8 are plain module-level functions in processors.py, not
             # closures/lambdas - cloudpickle serializes those *by reference*
