@@ -29,7 +29,7 @@ dependencies = [
     "rich>=14.2.0",
     "uproot>=5.6.6",
     "xrootd>=5.8.4",
-    "vine_reduce>=2026.8.3",
+    "vine-reduce>=2026.9.1",
 ]
 
 [project.optional-dependencies]
