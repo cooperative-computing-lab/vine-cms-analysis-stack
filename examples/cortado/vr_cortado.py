@@ -68,7 +68,7 @@ from vine_reduce.serialization import load as load_result
 from vine_reduce.taskvine_distributor import TaskVineDistributor
 
 CHUNKSIZE = 150
-FILES_PER_DATASET = 10
+FILES_PER_DATASET = 4
 DATASET_LEPTON_MEANS = {"signal": 3.0, "background": 1.0}
 
 
@@ -172,8 +172,8 @@ def build_datasets(data_dir):
         "--dataset-names", *dataset_names,
         "--num-datasets", str(len(dataset_names)),
         "--num-files", str(FILES_PER_DATASET),
-        "--min-events", "1000",
-        "--max-events", "5000",
+        "--min-events", "100",
+        "--max-events", "1000",
         "--muon-mean", *lepton_means,
         "--electron-mean", *lepton_means,
     )
