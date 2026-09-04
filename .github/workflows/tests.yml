@@ -19,6 +19,8 @@ jobs:
         with:
           environments: test
           cache: true
+          locked: false
+          frozen: true
 
       - name: Run tests
-        run: pixi run -e test pytest
+        run: pixi run --frozen -e test pytest
