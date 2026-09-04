@@ -7,7 +7,8 @@ processor skims events down to the ones with at least four leptons, and a
 custom reducer concatenates the surviving events from every chunk into one
 growing awkward array per dataset, exactly like cortado's own
 "accumulator" hook. Dropped relative to the original: ROOT output (this
-example writes plain parquet, see load_skim below), on-site condor/xrootd
+example writes plain parquet, see make_result_postprocess below), on-site
+condor/xrootd
 config (samples here are local synthetic files, not a real CMS dataset), and
 periodic checkpoint-triggered writes to disk (VineReduce already checkpoints
 intermediate reduce results under checkpoint_dir for restart, so nothing
@@ -34,13 +35,19 @@ Concretely, in this example:
   fraction of "signal" events.
 - skimmer (the map step) keeps only events with >=4 reconstructed leptons
   (electrons + muons combined) - a placeholder for a real analysis'
-  selection.
+  selection - and tags the survivors with their dataset name so
+  result_postprocess below knows where to write them.
 - accumulate_skims (the reduce step) concatenates the surviving events from
   two chunks/groups into one awkward array, replacing VineReduce's default
   `a += b` reducer (which doesn't know how to concatenate awkward arrays).
-- At the end, the final skim for each dataset is loaded back into memory,
-  written out as a parquet file, and checked for the signal-vs-background
-  asymmetry the input data was built to produce.
+- result_postprocess (see make_result_postprocess) runs remotely, once per
+  final reduction group, and writes that group's surviving events straight
+  to parquet under results_dir/skim_4lep/<dataset_name>.<uuid>.parquet -
+  the form a downstream analysis step would actually want. It returns just
+  the row count, which is what the framework pickles to
+  results_dir/<dataset_name>/skim_4lep/*.pkl.zst, so main() can report and
+  check the signal-vs-background asymmetry the input data was built to
+  produce without ever reopening the parquet fragments.
 """
 
 from __future__ import annotations
@@ -51,12 +58,13 @@ import os
 import shutil
 import subprocess
 import sys
+import uuid
 
 import awkward as ak
 import ndcctools.taskvine as vine
 
-from vine_reduce import serialization
 from vine_reduce.coffea import VineReduceCoffea
+from vine_reduce.serialization import load as load_result
 from vine_reduce.taskvine_distributor import TaskVineDistributor
 
 CHUNKSIZE = 150
@@ -88,9 +96,16 @@ def skimmer(events):
     """Runs remotely, once per Chunk of NanoEvents (VineReduceCoffea's
     chunk_to_args + executor take care of turning a Chunk into `events`
     and materializing this function's return value). Placeholder ">=4
-    leptons" selection, echoing a typical multi-lepton search skim."""
+    leptons" selection, echoing a typical multi-lepton search skim.
+
+    Tags every surviving event with its dataset name (from
+    events.metadata, set by chunk_to_args from the dataset's "dataset"
+    metadata key) - result_postprocess below only ever sees the
+    accumulated array itself, not which dataset produced it, and needs
+    this to know where to write its parquet output."""
     num_leptons = ak.num(events.Electron) + ak.num(events.Muon)
-    return events[num_leptons >= 4]
+    skim = events[num_leptons >= 4]
+    return ak.with_field(skim, events.metadata["dataset"], "_dataset")
 
 
 def accumulate_skims(a, b):
@@ -100,13 +115,44 @@ def accumulate_skims(a, b):
     return ak.concatenate([a, b], axis=0)
 
 
-def load_skim(results_dir, dataset_name, processor_name):
-    """Final results land under results_dir/<dataset_name>/<processor_name>/
-    as a single compressed, pickled file (name includes a random uuid, hence
-    the glob). serialization.load reverses what the reducer wrote."""
-    pattern = os.path.join(results_dir, dataset_name, processor_name, "*.pkl.zst")
-    (result_file,) = glob.glob(pattern)
-    return serialization.load(result_file)
+def make_result_postprocess(results_dir):
+    """Builds the result_postprocess callback: runs remotely, once per
+    final reduction group, and writes that group's surviving events
+    straight to parquet under
+    results_dir/skim_4lep/<dataset_name>.<uuid>.parquet, dropping the
+    _dataset tag skimmer added (only needed to route this write).
+
+    The uuid suffix (rather than a plain <dataset_name>.parquet) is
+    needed because more than one final result for the same dataset can
+    complete concurrently - so each writes its own fragment instead of
+    racing to overwrite a shared file. main() sums row counts across a
+    dataset's fragments when reporting.
+
+    Returns just the row count rather than the skim itself: whatever this
+    returns gets pickled by the framework to its own per-group results
+    file (results_dir/<dataset_name>/skim_4lep/*.pkl.zst) - that's the
+    count count_skim_rows below reads back, so main() never has to reopen
+    the parquet fragments just to learn how many rows they hold."""
+    def result_postprocess(skim):
+        if len(skim) == 0:
+            return 0
+        dataset_name = str(skim["_dataset"][0])
+        out_dir = os.path.join(results_dir, "skim_4lep")
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = os.path.join(out_dir, f"{dataset_name}.{uuid.uuid4().hex}.parquet")
+        fields = [f for f in skim.fields if f != "_dataset"]
+        ak.to_parquet(skim[fields], out_path)
+        return len(skim)
+    return result_postprocess
+
+
+def count_skim_rows(results_dir, dataset_name):
+    """Sums result_postprocess's returned row counts (see
+    make_result_postprocess) across every final result vine_reduce wrote
+    for this dataset - those pickles already are the counts, so nothing
+    here needs to touch the parquet fragments."""
+    pattern = os.path.join(results_dir, dataset_name, "skim_4lep", "*.pkl.zst")
+    return sum(load_result(f) for f in glob.glob(pattern))
 
 
 def build_datasets(data_dir):
@@ -167,25 +213,24 @@ def main():
             chunksize=CHUNKSIZE,
             results_dir=results_dir,
             distributor=distributor,
+            result_postprocess=make_result_postprocess(results_dir),
         )
         vr.compute()
     distributor.shutdown()
 
-    # Load each dataset's final skim, write it out as parquet (the form a
-    # downstream analysis step would actually want), and report how many
-    # events survived.
-    skims = {}
+    # Every dataset's parquet skim was already written by
+    # result_postprocess during compute(); just report how many events
+    # survived, straight from the row counts it also returned.
+    counts = {}
     for dataset_name in datasets:
-        skim = load_skim(results_dir, dataset_name, "skim_4lep")
-        skims[dataset_name] = skim
-        ak.to_parquet(skim, os.path.join(results_dir, f"{dataset_name}.parquet"))
-        print(f"{dataset_name}: {len(skim)} events pass the >=4-lepton skim")
+        counts[dataset_name] = count_skim_rows(results_dir, dataset_name)
+        print(f"{dataset_name}: {counts[dataset_name]} events pass the >=4-lepton skim")
 
     # Sanity check tied to how the input data was generated (see
     # DATASET_LEPTON_MEANS): "signal" has a higher mean lepton count than
     # "background", so it should pass the skim more often.
-    assert len(skims["signal"]) > len(
-        skims["background"]
+    assert (
+        counts["signal"] > counts["background"]
     ), "expected signal to pass the skim more often than background"
     print("OK: signal passes the >=4-lepton skim more often than background")
 
