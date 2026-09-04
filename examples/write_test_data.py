@@ -215,7 +215,7 @@ def main() -> None:
             rng,
         )
         manifest[name] = {
-            "metadata": {},
+            "metadata": {"dataset": name},
             "files": {
                 path: {"object_path": "Events", "num_entries": num_events}
                 for path, num_events in files.items()
