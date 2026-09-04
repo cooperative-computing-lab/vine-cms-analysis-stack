@@ -99,6 +99,10 @@ pyright = "*"
 vine-cms-analysis-stack = { path = ".", editable = true }
 vine-reduce = { path = "../vine-reduce", editable = true }
 
+[tool.pixi.feature.test.dependencies]
+pytest = ">=6.0"
+pytest-cov = ">=2.0"
+
 [tool.pixi.feature.pack.tasks]
 poncho = "pip install --no-deps --force-reinstall ../vine-reduce && poncho_package_create $CONDA_PREFIX vine-cms-analysis-stack.tar.gz"
 
@@ -109,4 +113,5 @@ vine-cms-analysis-stack = { path = ".", editable = false }
 [tool.pixi.environments]
 default = { solve-group = "default" }
 dev = { features = ["dev"], solve-group = "dev" }
+test = { features = ["test"], solve-group = "default" }
 pack = { features = ["pack"], solve-group = "pack" }
