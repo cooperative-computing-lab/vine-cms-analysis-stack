@@ -201,11 +201,12 @@ def main():
         checkpoint_dir=checkpoint_dir,
     )
     workers = vine.Factory(manager_host_port=f"localhost:{distributor.port}")
+    workers.ssl = True
     workers.cores = 2
     workers.min_workers = 1
     workers.max_workers = 1
 
-    with workers:
+    with distributor, workers:
         vr = VineReduceCoffea(
             processors={"skim_4lep": skimmer},
             input=datasets,
@@ -216,7 +217,6 @@ def main():
             result_postprocess=make_result_postprocess(results_dir),
         )
         vr.compute()
-    distributor.shutdown()
 
     # Every dataset's parquet skim was already written by
     # result_postprocess during compute(); just report how many events

@@ -286,8 +286,8 @@ def main():
         # db_path=None,
     )
 
-    vr.compute()
-    distributor.shutdown()
+    with distributor:
+        vr.compute()
 
     result = load_result(results_dir, "ttbar_like", "trijet")
     # flow=True: our uncorrelated, random-direction synthetic jets often

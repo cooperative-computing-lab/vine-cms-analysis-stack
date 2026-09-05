@@ -293,8 +293,8 @@ if __name__ == "__main__":
         results_dir=results_dir,
         distributor=distributor,
     )
-    vr.compute()
-    distributor.shutdown()
+    with distributor:
+        vr.compute()
 
     hists = load_all_results(results_dir, list(available.keys()), list(vr.processors.keys()))
     print("\n\n resulting hists: ")

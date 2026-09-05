@@ -157,11 +157,12 @@ def main():
         checkpoint_dir=checkpoint_dir,
     )
     workers = vine.Factory(manager_host_port=f"localhost:{distributor.port}")
+    workers.ssl = True
     workers.cores = 2
     workers.min_workers = 1
     workers.max_workers = 1
 
-    with workers:
+    with distributor, workers:
         # reducer defaults to VineReduceCoffea's own default_reducer, which
         # already knows how to sum Hists (and dicts of them, for q6) - see
         # processors.py's module docstring.
@@ -178,7 +179,6 @@ def main():
             extra_files=[os.path.join(here, "processors.py")],
         )
         vr.compute()
-    distributor.shutdown()
 
     results = {name: load_result(results_dir, DATASET_NAME, name) for name in PROCESSORS}
     for name, result in results.items():

@@ -292,13 +292,13 @@ def main():
     )
 
     workers = vine.Factory(manager_host_port=f"localhost:{distributor.port}")
+    workers.ssl = True
     workers.cores = 2
     workers.min_workers = 1
     workers.max_workers = 1
 
-    with workers:
+    with distributor, workers:
         vr.compute()
-    distributor.shutdown()
 
     result = load_result(results_dir, "ttbar_like", "trijet")
     # flow=True: our uncorrelated, random-direction synthetic jets often
