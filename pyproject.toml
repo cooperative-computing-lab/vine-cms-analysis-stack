@@ -97,11 +97,13 @@ pyright = "*"
 
 [tool.pixi.feature.dev.pypi-dependencies]
 vine-cms-analysis-stack = { path = ".", editable = true }
-vine-reduce = { path = "../vine-reduce", editable = true }
 
 [tool.pixi.feature.test.dependencies]
 pytest = ">=6.0"
 pytest-cov = ">=2.0"
+
+[tool.pixi.feature.dev.tasks]
+reload = "pip install --no-deps --force-reinstall ../vine-reduce"
 
 [tool.pixi.feature.pack.tasks]
 poncho = "pip install --no-deps --force-reinstall ../vine-reduce && poncho_package_create $CONDA_PREFIX vine-cms-analysis-stack.tar.gz"
