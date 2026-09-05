@@ -109,7 +109,6 @@ reload = "pip install --no-deps --force-reinstall ../vine-reduce"
 poncho = "pip install --no-deps --force-reinstall ../vine-reduce && poncho_package_create $CONDA_PREFIX vine-cms-analysis-stack.tar.gz"
 
 [tool.pixi.feature.pack.pypi-dependencies]
-vine-reduce = { path = "../vine-reduce", editable = false }
 vine-cms-analysis-stack = { path = ".", editable = false }
 
 [tool.pixi.environments]
