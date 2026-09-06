@@ -267,8 +267,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - pypi: ./
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/63/4b/e3678b4e776db00f9f7b2fe58e547e8928ef32727d7a1ff01dea010f3f13/zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_x86_64-microarch-level-1-5_level1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
@@ -502,7 +502,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-hbc1a06c_7.conda
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/35/0b/8df9c4ad06af91d39e94fa96cc010a24ac4ef1378d3efab9223cc8593d40/zstandard-0.25.0-cp313-cp313-macosx_10_13_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiosignal-1.4.0-pyhd8ed1ab_0.conda
@@ -735,7 +735,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hf451053_7.conda
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/3f/06/9ae96a3e5dcfd119377ba33d4c42a7d89da1efabd5cb3e366b156c45ff4d/zstandard-0.25.0-cp313-cp313-macosx_11_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
   dev:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -1007,8 +1007,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - pypi: ./
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/63/4b/e3678b4e776db00f9f7b2fe58e547e8928ef32727d7a1ff01dea010f3f13/zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_x86_64-microarch-level-1-5_level1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
@@ -1263,7 +1263,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-hbc1a06c_7.conda
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/35/0b/8df9c4ad06af91d39e94fa96cc010a24ac4ef1378d3efab9223cc8593d40/zstandard-0.25.0-cp313-cp313-macosx_10_13_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiosignal-1.4.0-pyhd8ed1ab_0.conda
@@ -1517,7 +1517,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hf451053_7.conda
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/3f/06/9ae96a3e5dcfd119377ba33d4c42a7d89da1efabd5cb3e366b156c45ff4d/zstandard-0.25.0-cp313-cp313-macosx_11_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
   pack:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -1767,9 +1767,9 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/xyzservices-2026.9.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
-      - pypi: ../vine-reduce
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/63/4b/e3678b4e776db00f9f7b2fe58e547e8928ef32727d7a1ff01dea010f3f13/zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_x86_64-microarch-level-1-5_level1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
@@ -2001,9 +2001,9 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-1.3.2-hbb4bfdb_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-ng-2.3.3-h646e873_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-hbc1a06c_7.conda
-      - pypi: ../vine-reduce
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/35/0b/8df9c4ad06af91d39e94fa96cc010a24ac4ef1378d3efab9223cc8593d40/zstandard-0.25.0-cp313-cp313-macosx_10_13_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiosignal-1.4.0-pyhd8ed1ab_0.conda
@@ -2234,9 +2234,9 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-1.3.2-h8088a28_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-h31dac16_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hf451053_7.conda
-      - pypi: ../vine-reduce
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/3f/06/9ae96a3e5dcfd119377ba33d4c42a7d89da1efabd5cb3e366b156c45ff4d/zstandard-0.25.0-cp313-cp313-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
   test:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -2495,8 +2495,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - pypi: ./
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/63/4b/e3678b4e776db00f9f7b2fe58e547e8928ef32727d7a1ff01dea010f3f13/zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_x86_64-microarch-level-1-5_level1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
@@ -2738,7 +2738,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-hbc1a06c_7.conda
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/35/0b/8df9c4ad06af91d39e94fa96cc010a24ac4ef1378d3efab9223cc8593d40/zstandard-0.25.0-cp313-cp313-macosx_10_13_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.7.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiosignal-1.4.0-pyhd8ed1ab_0.conda
@@ -2979,7 +2979,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hf451053_7.conda
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/3f/06/9ae96a3e5dcfd119377ba33d4c42a7d89da1efabd5cb3e366b156c45ff4d/zstandard-0.25.0-cp313-cp313-macosx_11_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-20_gnu.conda
   build_number: 20
@@ -5042,7 +5042,7 @@ packages:
   license: Apache-2.0
   license_family: APACHE
   purls:
-  - pkg:pypi/msgpack?source=compressed-mapping
+  - pkg:pypi/msgpack?source=hash-mapping
   run_exports: {}
   size: 114896
   timestamp: 1788525095321
@@ -12635,24 +12635,6 @@ packages:
     - zstd >=1.5.7,<1.6.0a0
   size: 433687
   timestamp: 1786599629846
-- pypi: ../vine-reduce
-  name: vine-reduce
-  requires_dist:
-  - awkward>=2.8.7
-  - coffea>=2025.7.3
-  - fsspec>=2026.7.0
-  - fsspec-xrootd>=0.5.1
-  - numpy>=2.4.6
-  - rich>=14.2.0
-  - uproot>=5.6.6
-  - xrootd>=5.8.4
-  - zstandard>=0.25.0
-  - pytest>=6.0 ; extra == 'dev'
-  - pytest-cov>=2.0 ; extra == 'dev'
-  - black>=21.0 ; extra == 'dev'
-  - flake8>=3.8 ; extra == 'dev'
-  - ndcctools>=7.17.1 ; extra == 'conda'
-  requires_python: '>=3.13'
 - pypi: ./
   name: vine-cms-analysis-stack
   requires_dist:
@@ -12664,7 +12646,7 @@ packages:
   - rich>=14.2.0
   - uproot>=5.6.6
   - xrootd>=5.8.4
-  - vine-reduce>=2026.9.4
+  - vine-reduce>=2026.9.5
   - pytest>=6.0 ; extra == 'dev'
   - pytest-cov>=2.0 ; extra == 'dev'
   - black>=21.0 ; extra == 'dev'
@@ -12687,10 +12669,18 @@ packages:
   - cffi~=1.17 ; python_full_version < '3.14' and platform_python_implementation != 'PyPy' and extra == 'cffi'
   - cffi>=2.0.0b0 ; python_full_version >= '3.14' and platform_python_implementation != 'PyPy' and extra == 'cffi'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/57/a3/a31ac0d1a24a1af1558882d0324574a1f5e3a3212682eee97a450c0a611e/vine_reduce-2026.9.4-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/63/4b/e3678b4e776db00f9f7b2fe58e547e8928ef32727d7a1ff01dea010f3f13/zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+  name: zstandard
+  version: 0.25.0
+  sha256: 8e735494da3db08694d26480f1493ad2cf86e99bdd53e8e9771b2752a5c0246a
+  requires_dist:
+  - cffi~=1.17 ; python_full_version < '3.14' and platform_python_implementation != 'PyPy' and extra == 'cffi'
+  - cffi>=2.0.0b0 ; python_full_version >= '3.14' and platform_python_implementation != 'PyPy' and extra == 'cffi'
+  requires_python: '>=3.9'
+- pypi: https://files.pythonhosted.org/packages/fe/e3/76cbf5c052deaa697bf3779df22ac4de97f7f0e8fef696f001d09ff27b2a/vine_reduce-2026.9.5-py3-none-any.whl
   name: vine-reduce
-  version: 2026.9.4
-  sha256: b1b33d857098dafeb9e161a89e4e28994134e5dcde230433394972f6e759c538
+  version: 2026.9.5
+  sha256: bf93857755357bc94b0e1d27847105ad7663d4fc04c6bd665fe4dd9daabf4d01
   requires_dist:
   - awkward>=2.8.7
   - coffea>=2025.7.3
@@ -12707,11 +12697,3 @@ packages:
   - flake8>=3.8 ; extra == 'dev'
   - ndcctools>=7.17.1 ; extra == 'conda'
   requires_python: '>=3.13'
-- pypi: https://files.pythonhosted.org/packages/63/4b/e3678b4e776db00f9f7b2fe58e547e8928ef32727d7a1ff01dea010f3f13/zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
-  name: zstandard
-  version: 0.25.0
-  sha256: 8e735494da3db08694d26480f1493ad2cf86e99bdd53e8e9771b2752a5c0246a
-  requires_dist:
-  - cffi~=1.17 ; python_full_version < '3.14' and platform_python_implementation != 'PyPy' and extra == 'cffi'
-  - cffi>=2.0.0b0 ; python_full_version >= '3.14' and platform_python_implementation != 'PyPy' and extra == 'cffi'
-  requires_python: '>=3.9'

@@ -29,7 +29,7 @@ dependencies = [
     "rich>=14.2.0",
     "uproot>=5.6.6",
     "xrootd>=5.8.4",
-    "vine-reduce>=2026.9.4",
+    "vine-reduce>=2026.9.5",
 ]
 
 [project.optional-dependencies]
@@ -103,10 +103,10 @@ pytest = ">=6.0"
 pytest-cov = ">=2.0"
 
 [tool.pixi.feature.dev.tasks]
-reload = "pip install --no-deps --force-reinstall ../vine-reduce"
+reload = "uv pip install --python \"$(command -v python)\" --no-deps --force-reinstall --no-cache ../vine-reduce"
 
 [tool.pixi.feature.pack.tasks]
-poncho = "pip install --no-deps --force-reinstall ../vine-reduce && poncho_package_create $CONDA_PREFIX vine-cms-analysis-stack.tar.gz"
+poncho = "uv pip install --python \"$(command -v python)\" --no-deps --force-reinstall --no-cache ../vine-reduce && poncho_package_create $CONDA_PREFIX vine-cms-analysis-stack.tar.gz"
 
 [tool.pixi.feature.pack.pypi-dependencies]
 vine-cms-analysis-stack = { path = ".", editable = false }
