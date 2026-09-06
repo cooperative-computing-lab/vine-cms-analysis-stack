@@ -224,5 +224,5 @@ examples/**/datasets.json
 # Run artifacts from executing the examples (TaskVine/VineReduce runtime state)
 checkpoints/
 results/
-vine-factory-1000/
+vine-factory-*/
 vine-run-info/
