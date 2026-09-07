@@ -107,7 +107,7 @@ pytest-cov = ">=2.0"
 # vine-reduce is a local path dependency here, but pixi does not re-detect
 # source-only changes to it (no version/rev to compare against) - force a
 # fresh build before packaging so poncho always ships current local code.
-poncho = "uv pip install --python \"$(command -v python)\" --no-deps --force-reinstall --no-cache ../vine-reduce && poncho_package_create $CONDA_PREFIX vine-cms-analysis-stack.tar.gz"
+poncho = "uv pip install --python .pixi/envs/pack/bin/python --no-deps --force-reinstall --no-cache ../vine-reduce && poncho_package_create $CONDA_PREFIX vine-cms-analysis-stack.tar.gz"
 
 [tool.pixi.feature.pack.pypi-dependencies]
 vine-cms-analysis-stack = { path = ".", editable = false }
