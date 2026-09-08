@@ -114,7 +114,7 @@ executors usually merge:
 - **Executor** — runs a single processor call at the execution site, once
   a distributor has placed it on a worker. VineReduce ships a plain
   in-process executor, a `cloudpickle`-based one that isolates a call in
-  its own subprocess, and a `dask_executor` for processors that return a
+  its own subprocess, and a `DaskExecutor` for processors that return a
   dask-delayed object or array.
 
 Splitting these lets a `TaskVineDistributor` place work on a cluster
@@ -202,23 +202,26 @@ system needs nothing beyond TaskVine itself.
 
 `vine_reduce.get_environment()` builds that tarball for you, via
 `poncho_package_create` — no manual `conda-pack`/`pixi` bookkeeping
-needed. It packs VineReduce itself by default; pass this repo's own
-checkout through `extra_pip` to include it too (a plain, non-editable pip
-install, so — unlike `pip install -e .` — the packed tarball never points
-back at a path that only exists on the machine that built it):
+needed. It packs whatever is currently installed in the calling conda
+environment (`$CONDA_PREFIX` by default) — nothing more, and it doesn't
+`pip install` anything on your own behalf. So to ship this repo's own
+code to workers, this repo has to already be installed into that
+environment first: the pixi setup above does that automatically, editable,
+via `[tool.pixi.pypi-dependencies]` (Option B); under conda (Option A),
+`pip install -e .` it yourself. Pass `pip_editable` so an uncommitted
+change to this repo's own checkout — not just VineReduce's, which is
+watched by default — also forces a rebuild instead of silently shipping
+stale code:
 
 ```python
-from pathlib import Path
 from vine_reduce import TaskVineDistributor, get_environment
 
-repo_root = Path(__file__).resolve().parent  # this repo's own checkout
-
 environment = get_environment(
-    extra_pip=[str(repo_root)],
     # optional: rebuild automatically whenever this repo has uncommitted
     # changes, the same way it already does for vine_reduce by default -
-    # see "Installation" for why this repo is normally installed editable.
-    pip_local_to_watch={"vine-cms-analysis-stack": ["examples", "pyproject.toml"]},
+    # requires this repo to be installed editable (pixi's default; see
+    # "Installation").
+    pip_editable={"vine-cms-analysis-stack": ["examples", "pyproject.toml"]},
 )
 
 distributor = TaskVineDistributor(
@@ -232,18 +235,20 @@ distributor = TaskVineDistributor(
 Every processor/reducer task submitted through this `distributor` now
 runs inside that packed environment at the worker, regardless of what
 Python (if any) is installed on that machine. Builds are cached on disk
-(keyed by the resolved package spec) and reused across runs; `force=True`
-rebuilds unconditionally, and `unstaged="fail"` raises `UnstagedChanges`
-instead of silently rebuilding when a watched, editable checkout (this
-repo, VineReduce, or anything else named in `pip_local_to_watch`) has
-uncommitted changes. Building requires `poncho_package_create` and `conda`
-on `PATH` — the same `ndcctools`/`conda` dependency TaskVine itself needs
-(see "Installation" above).
+(keyed by a hash of the conda environment's installed packages, plus the
+commit/dirty state of every watched editable install) and reused across
+runs; `force=True` rebuilds unconditionally, and `unstaged="fail"` raises
+`UnstagedChanges` instead of silently rebuilding when a watched, editable
+checkout (VineReduce by default, this repo or anything else named in
+`pip_editable`) has uncommitted changes. Building requires
+`poncho_package_create` and `conda` on `PATH` — the same `ndcctools`/
+`conda` dependency TaskVine itself needs (see "Installation" above).
 
 See VineReduce's own README, ["Packaging an environment for remote
 workers"](https://github.com/cooperative-computing-lab/vine-reduce#packaging-an-environment-for-remote-workers),
 for the full `get_environment()` API, or reach for `poncho_package_create`
-directly if a build needs more control than a conda+pip spec allows.
+directly if a build needs more control than packing the live conda
+environment allows.
 
 ## Quickstart: cortado on synthetic data
 
