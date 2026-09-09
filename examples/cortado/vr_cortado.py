@@ -198,7 +198,6 @@ def main():
         port=0,
         resources_processor={"cores": 1},
         resources_reducer={"cores": 1},
-        checkpoint_dir=checkpoint_dir,
     )
     workers = vine.Factory(manager_host_port=f"localhost:{distributor.port}")
     workers.ssl = True
@@ -213,6 +212,7 @@ def main():
             reducer=accumulate_skims,
             chunksize=CHUNKSIZE,
             results_dir=results_dir,
+            checkpoint_dir=checkpoint_dir,
             distributor=distributor,
             result_postprocess=make_result_postprocess(results_dir),
         )

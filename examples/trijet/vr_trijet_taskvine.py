@@ -202,7 +202,6 @@ def main():
         environment=None,
         resources_processor={"cores": 1},
         resources_reducer={"cores": 1},
-        checkpoint_dir=checkpoint_dir,
     )
 
     # Every VineReduceCoffea/VineReduce parameter, spelled out explicitly
@@ -275,8 +274,8 @@ def main():
         # max_chunks_cycle=100,
 
         # ------ checkpointing / restart ------
-        # non-final checkpoints themselves are the distributor's concern
-        # (see TaskVineDistributor's checkpoint_dir above), not VineReduce's
+        # where non-final checkpoints are written for restart
+        checkpoint_dir=checkpoint_dir,
 
         # whether each accumulation should be checkpointed
         # checkpoint_accumulations=False,

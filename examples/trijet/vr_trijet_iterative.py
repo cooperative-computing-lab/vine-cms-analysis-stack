@@ -198,7 +198,7 @@ def main():
     # subprocesses already share this process's filesystem and Python env.
     # See vine_reduce/local_distributor.py's module docstring for the
     # tradeoffs versus TaskVineDistributor (see vr_trijet_taskvine.py).
-    distributor = LocalDistributor(max_workers=2, checkpoint_dir=checkpoint_dir)
+    distributor = LocalDistributor(max_workers=2)
 
     # Every VineReduceCoffea/VineReduce parameter, spelled out explicitly
     # so this template shows the full surface area in one place. Commented
@@ -270,8 +270,8 @@ def main():
         # max_chunks_cycle=100,
 
         # ------ checkpointing / restart ------
-        # non-final checkpoints themselves are the distributor's concern
-        # (see LocalDistributor's checkpoint_dir above), not VineReduce's
+        # where non-final checkpoints are written for restart
+        checkpoint_dir=checkpoint_dir,
 
         # whether each accumulation should be checkpointed
         # checkpoint_accumulations=False,
