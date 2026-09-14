@@ -85,6 +85,7 @@ setuptools = "<81"
 uproot = ">=5.6.6"
 xrootd = ">=5.8.1"
 pyyaml = ">=5.4.1"
+matplotlib = ">=3.11.1,<4"
 
 [tool.pixi.pypi-dependencies]
 vine-cms-analysis-stack = { path = ".", editable = true }

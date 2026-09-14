@@ -6,6 +6,7 @@ dependencies:
   - awkward=2.8.7
   - coffea>=2025.10.2
   - fsspec-xrootd>=0.5.1
+  - matplotlib>=3.11.1,<4
   - ndcctools>=7.17.1
   - python>=3.13
   - rich>=14.2.0
