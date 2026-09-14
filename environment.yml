@@ -4,7 +4,7 @@ channels:
   - nodefaults
 dependencies:
   - awkward=2.8.7
-  - coffea=2025.7.3
+  - coffea>=2025.10.2
   - fsspec-xrootd>=0.5.1
   - ndcctools>=7.17.1
   - python>=3.13
