@@ -104,22 +104,16 @@ def trijet_processor(events):
     )
     trijet = ak.combinations(jets, 3, fields=["j1", "j2", "j3"])
     trijet["p4"] = trijet.j1 + trijet.j2 + trijet.j3
-    trijet = ak.flatten(
-        trijet[ak.singletons(ak.argmin(abs(trijet.p4.mass - 172.5), axis=1))]
-    )
+    trijet = ak.flatten(trijet[ak.singletons(ak.argmin(abs(trijet.p4.mass - 172.5), axis=1))])
     maxBtag = np.maximum(
         trijet.j1.btag,
         np.maximum(trijet.j2.btag, trijet.j3.btag),
     )
     return {
-        "trijetpt": hist.Hist.new.Reg(
-            100, 0, 200, name="pt3j", label="Trijet $p_{T}$ [GeV]"
-        )
+        "trijetpt": hist.Hist.new.Reg(100, 0, 200, name="pt3j", label="Trijet $p_{T}$ [GeV]")
         .Double()
         .fill(trijet.p4.pt),
-        "maxbtag": hist.Hist.new.Reg(
-            100, 0, 1, name="btag", label="Max jet b-tag score"
-        )
+        "maxbtag": hist.Hist.new.Reg(100, 0, 1, name="btag", label="Max jet b-tag score")
         .Double()
         .fill(maxBtag),
     }
@@ -159,9 +153,12 @@ def build_datasets(data_dir):
 
     return ensure_datasets(
         data_dir,
-        "--dataset-names", "ttbar_like",
-        "--num-files", "3",
-        "--jet-mean", str(JET_MEAN),
+        "--dataset-names",
+        "ttbar_like",
+        "--num-files",
+        "3",
+        "--jet-mean",
+        str(JET_MEAN),
     )
 
 
@@ -212,81 +209,58 @@ def main():
         # --------- what to run, over what ---------
         # {name: processor_fn} - one Pipeline per (processor, dataset) pair
         processors={"trijet": trijet_processor},
-
         # coffea-shaped dataset dict (or a json path) - see build_datasets()
         input=datasets,
-
         # extra kwargs passed to each processor call, beyond `events`
         # processor_args=None,
-
         # extra local files shipped to workers beyond the task itself
         # extra_files=[],
-
         # extra environment variables set for worker tasks
         # environment_variables={},
-
         # --- execution backend ---
         # where processor/reducer calls actually run - a TaskVineDistributor here
         distributor=distributor,
-
         # --- final results ---
         # where each dataset/processor's final result lands (see load_result)
         results_dir=results_dir,
-
         # by default, an accumulation counts as "final" once it covers every event of its
         # dataset. Pass a function(num_events, total_time_s, total_memory_mb) -> bool
         # instead to emit results in parts, e.g. every N events, every T seconds,
         # or once M MB have accumulated.
         # is_result=None,
-
         # no transform applied to a final result before it's written out, akin to lambda x: x
         # result_postprocess=None,
-
-
         # --------- combining results ---------
         # default reducer is akin to a += b, folds two chunks'/groups' results together,
         # which already sums Hists and dicts of them.
         # reducer=None
-
         # how many results get folded together per reduction step
         # reduction_size=10,
-
         # --------- reading events out of a chunk ------------
         # schema used to interpret each ROOT file's branches
         # schema=coffea.nanoevents.NanoAODSchema,
-
         # NanoEvents factory laziness mode - "virtual" arrays materialize on first use
         # mode="virtual",
-
         # TTree name read from each file
         # object_path="Events",
-
         # extra kwargs forwarded to uproot when opening each file
         # uproot_options=None,
-
         # ------ chunking / scheduling ------
         # events per chunk; None (the default) -> one chunk per file
         # chunksize=None,
-
         # cap on chunks in flight (processing + reducing) at once
         # max_chunks_active=1000,
-
         # cap on new chunks submitted per scheduling-loop iteration
         # max_chunks_cycle=100,
-
         # ------ checkpointing / restart ------
         # where non-final checkpoints are written for restart
         checkpoint_dir=checkpoint_dir,
-
         # whether each accumulation should be checkpointed
         # checkpoint_accumulations=False,
-
         # time-based (runtime seconds) checkpoint trigger
         # checkpoint_time=None,
-
         # distance-based (accumulations since last checkpoint) checkpoint trigger
         # checkpoint_distance=None,
-
         # results_dir/vine_reduce.db; sqlite db tracking what's already been computed
         # db_path=None,
     )
@@ -312,9 +286,9 @@ def main():
         file_info["num_entries"] for file_info in datasets["ttbar_like"]["files"].values()
     )
     assert trijetpt_entries == maxbtag_entries, "both histograms should fill once per event"
-    assert trijetpt_entries > 0.5 * total_events, (
-        "expected most synthetic events to have >=3 jets and fill the trijet histograms"
-    )
+    assert (
+        trijetpt_entries > 0.5 * total_events
+    ), "expected most synthetic events to have >=3 jets and fill the trijet histograms"
     print("OK: trijet histograms filled for the large majority of events")
 
 
