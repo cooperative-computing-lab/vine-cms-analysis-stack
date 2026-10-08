@@ -19,6 +19,11 @@ setup; `vine_reduce` only keeps its own minimal, non-physics quickstart:
   [`trijet/vr_trijet_iterative.py`](trijet/vr_trijet_iterative.py) is the
   same example run over `LocalDistributor` instead - no cluster or
   `vine_factory`/`vine_worker` needed, useful for a quick local check.
+- [`tutorial_nd/`](tutorial_nd/README.md) — the scripts and data manifests of the
+  TaskVine / VineReduce tutorial given at Notre Dame (ND-specific: its data,
+  pool, and certificates only exist there): the trijet analysis over real CMS Open Data,
+  from `LocalDistributor` to the HTCondor pool, with checkpoints, skims, and
+  `failure_proportion`.
 - [`ADL/vr_adl_benchmarks.py`](ADL/vr_adl_benchmarks.py) — all eight
   [IRIS-HEP ADL benchmark](https://github.com/CoffeaTeam/coffea-benchmarks/blob/master/coffea-adl-benchmarks.py)
   queries (Q1-Q8; `processors.py` holds the query bodies, including the

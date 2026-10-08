@@ -1,0 +1,21 @@
+name: cortado
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - black=25.1.0
+  - clang-format-21
+  - conda-pack=0.8.1
+  - flake8=7.3.0
+  - fsspec=2025.10.0
+  - fsspec-xrootd=0.5.1
+  - ndcctools=7.15.14
+  - python=3.12.12
+  - rich=14.2.0
+  - coffea==2025.10.2
+  - xrootd==5.9
+  - uproot==5.6
+  - pip:
+      # - cortado==0.0.0
+      # - vine-reduce==2025.11.3
+prefix: /groups/dthain/users/btovar/miniconda3/envs/cortado
